@@ -1,0 +1,807 @@
+============================== Prover9 ===============================
+Prover9 (64) version 2009-11A, November 2009.
+Process 23867 was started by zikesjan on jan-mbp-5,
+Fri Jun  6 15:59:00 2014
+The command was "/Users/zikesjan/Downloads/LADR-2009-11A/bin/prover9".
+============================== end of head ===========================
+
+============================== INPUT =================================
+set(prolog_style_variables).
+
+formulas(assumptions).
+(all X all Y (less(X,Y) & less(Y,X) -> X = Y)) # label(antisymmetry) # label(axiom).
+(all X all Y all Z (less(X,Y) & less(Y,Z) -> less(X,Z))) # label(transitivity) # label(axiom).
+(all X all Y (less(X,Y) | less(Y,X))) # label(totality) # label(axiom).
+(all X (less(X,succ(X)) & (all Y (less(Y,X) | less(succ(X),Y))))) # label(succ) # label(axiom).
+(all X (pred(succ(X)) = X & succ(pred(X)) = X)) # label(pred) # label(axiom).
+(all X all T (train(T) -> (exists X2 (less(X,X2) & go(X2,T))))) # label(go) # label(axiom).
+(all X all T (train(T) & go(X,T) & (switch(X,s1) = out2 & at(X,T,s1) | switch(X,s2) = out2 & at(X,T,s2)) <-> at(succ(X),T,out2))) # label(out2ax1) # label(axiom).
+(all X all T (train(T) & go(X,T) & (switch(X,s1) = out1 & at(X,T,s1) | switch(X,s2) = out1 & at(X,T,s2)) <-> at(succ(X),T,out1))) # label(out1ax1) # label(axiom).
+(all X all T (train(T) & go(X,T) & open(X,in2) & at(X,T,in2) <-> at(succ(X),T,s2))) # label(s2ax1) # label(axiom).
+(all X all T (train(T) & go(X,T) & open(X,in1) & at(X,T,in1) <-> at(succ(X),T,s1))) # label(s1ax1) # label(axiom).
+in2 != in1 & in2 != s2 & in2 != s1 & in2 != out2 & in2 != out1 & in1 != s2 & in1 != s1 & in1 != out2 & in1 != out1 & s2 != s1 & s2 != out2 & s2 != out1 & s1 != out2 & s1 != out1 & out2 != out1 # label(nodesExclusivity) # label(axiom).
+(all X all T (at(X,T,out2) -> -at(succ(X),T,out2))) # label(disappearout2) # label(axiom).
+(all X all T (at(X,T,out1) -> -at(succ(X),T,out1))) # label(disappearout1) # label(axiom).
+(all X all T all N1 all N2 (at(X,T,N1) & at(X,T,N2) -> N1 = N2)) # label(positionInOneNodeAtTime) # label(axiom).
+(all X all T1 all T2 (at(X,T1,in2) & T1 != T2 -> -at(X,T2,in2))) # label(onlyOneTrainin2) # label(axiom).
+(all X all T1 all T2 (at(X,T1,in1) & T1 != T2 -> -at(X,T2,in1))) # label(onlyOneTrainin1) # label(axiom).
+(all X all T (at(succ(X),T,in2) <-> appear(X,T,in2) | at(X,T,in2) & (-go(X,T) | -open(X,in2)))) # label(appearin2) # label(axiom).
+(all X all T (at(succ(X),T,in1) <-> appear(X,T,in1) | at(X,T,in1) & (-go(X,T) | -open(X,in1)))) # label(appearin1) # label(axiom).
+(all T (goal(T) = out2 | goal(T) = out1)) # label(trainGoals) # label(axiom).
+(all X (succ(X) != X -> (clockOrder(X) = in2 <-> clockOrder(succ(X)) = in1))) # label(clockOrderin2) # label(axiom).
+(all X (succ(X) != X -> (clockOrder(X) = in1 <-> clockOrder(succ(X)) = in2))) # label(clockOrderin1) # label(axiom).
+(all X (clockOrder(X) = in2 | clockOrder(X) = in1)) # label(clockPossibilities) # label(axiom).
+(all X (configuration(X,path0) <-> switch(X,s1) = out2)) # label(switchesConfiguration0) # label(axiom).
+(all X (configuration(X,path1) <-> switch(X,s2) = out2)) # label(switchesConfiguration1) # label(axiom).
+(all X (configuration(X,path2) <-> switch(X,s1) = out1)) # label(switchesConfiguration2) # label(axiom).
+(all X (configuration(X,path3) <-> switch(X,s2) = out1)) # label(switchesConfiguration3) # label(axiom).
+(all X all T (free(X,path0) <-> -at(X,T,s1))) # label(freeRoute0) # label(axiom).
+(all X all T (free(X,path1) <-> -at(X,T,s2))) # label(freeRoute1) # label(axiom).
+(all X all T (free(X,path2) <-> -at(X,T,s1))) # label(freeRoute2) # label(axiom).
+(all X all T (free(X,path3) <-> -at(X,T,s2))) # label(freeRoute3) # label(axiom).
+(all X (nonconflicting(X,path0) <-> free(X,path0) & free(X,path1) & free(X,path2))) # label(nonconflicting0) # label(axiom).
+(all X (nonconflicting(X,path1) <-> free(X,path1) & free(X,path0) & free(X,path3))) # label(nonconflicting1) # label(axiom).
+(all X (nonconflicting(X,path2) <-> free(X,path2) & free(X,path0) & free(X,path3))) # label(nonconflicting2) # label(axiom).
+(all X (nonconflicting(X,path3) <-> free(X,path3) & free(X,path1) & free(X,path2))) # label(nonconflicting3) # label(axiom).
+path0 != path1 & path0 != path2 & path0 != path3 & path1 != path2 & path1 != path3 & path2 != path3 # label(routesExclusivity) # label(axiom).
+(all X (available(X,path0) <-> nonconflicting(X,path0) & configuration(X,path0))) # label(availableRoute0) # label(axiom).
+(all X (available(X,path1) <-> nonconflicting(X,path1) & configuration(X,path1))) # label(availableRoute1) # label(axiom).
+(all X (available(X,path2) <-> nonconflicting(X,path2) & configuration(X,path2))) # label(availableRoute2) # label(axiom).
+(all X (available(X,path3) <-> nonconflicting(X,path3) & configuration(X,path3))) # label(availableRoute3) # label(axiom).
+(all X exists T (wantsToGo(X,in2,out2) <-> at(X,T,in2) & goal(T) = out2)) # label(wantsToGoin2out2) # label(axiom).
+(all X exists T (wantsToGo(X,in2,out1) <-> at(X,T,in2) & goal(T) = out1)) # label(wantsToGoin2out1) # label(axiom).
+(all X exists T (wantsToGo(X,in1,out2) <-> at(X,T,in1) & goal(T) = out2)) # label(wantsToGoin1out2) # label(axiom).
+(all X exists T (wantsToGo(X,in1,out1) <-> at(X,T,in1) & goal(T) = out1)) # label(wantsToGoin1out1) # label(axiom).
+(all X (toBeUsed(X,path0) <-> available(X,path0) & clockOrder(X) = in1 & wantsToGo(X,in1,out2))) # label(pathToBeUsed0) # label(axiom).
+(all X (toBeUsed(X,path1) <-> available(X,path1) & clockOrder(X) = in2 & wantsToGo(X,in2,out2))) # label(pathToBeUsed1) # label(axiom).
+(all X (toBeUsed(X,path2) <-> available(X,path2) & clockOrder(X) = in1 & wantsToGo(X,in1,out1))) # label(pathToBeUsed2) # label(axiom).
+(all X (toBeUsed(X,path3) <-> available(X,path3) & clockOrder(X) = in2 & wantsToGo(X,in2,out1))) # label(pathToBeUsed3) # label(axiom).
+(all X all P (configuration(succ(X),P) <-> configuration(X,P) & -free(X,P) | toBeUsed(X,P))) # label(setPath) # label(axiom).
+(all X (open(succ(X),in2) <-> toBeUsed(X,path1) | toBeUsed(X,path3))) # label(openGatein2) # label(axiom).
+(all X (open(succ(X),in1) <-> toBeUsed(X,path0) | toBeUsed(X,path2))) # label(openGatein1) # label(axiom).
+end_of_list.
+
+formulas(goals).
+(exists X exists Y (at(X,T,in2) & less(X,Y) -> open(X,in2))) # label(willOpenin2) # label(conjecture).
+end_of_list.
+
+============================== end of input ==========================
+
+============================== PROCESS NON-CLAUSAL FORMULAS ==========
+
+% Formulas that are not ordinary clauses:
+1 (all X all Y (less(X,Y) & less(Y,X) -> X = Y)) # label(antisymmetry) # label(axiom) # label(non_clause).  [assumption].
+2 (all X all Y all Z (less(X,Y) & less(Y,Z) -> less(X,Z))) # label(transitivity) # label(axiom) # label(non_clause).  [assumption].
+3 (all X all Y (less(X,Y) | less(Y,X))) # label(totality) # label(axiom) # label(non_clause).  [assumption].
+4 (all X (less(X,succ(X)) & (all Y (less(Y,X) | less(succ(X),Y))))) # label(succ) # label(axiom) # label(non_clause).  [assumption].
+5 (all X (pred(succ(X)) = X & succ(pred(X)) = X)) # label(pred) # label(axiom) # label(non_clause).  [assumption].
+6 (all X all T (train(T) -> (exists X2 (less(X,X2) & go(X2,T))))) # label(go) # label(axiom) # label(non_clause).  [assumption].
+7 (all X all T (train(T) & go(X,T) & (switch(X,s1) = out2 & at(X,T,s1) | switch(X,s2) = out2 & at(X,T,s2)) <-> at(succ(X),T,out2))) # label(out2ax1) # label(axiom) # label(non_clause).  [assumption].
+8 (all X all T (train(T) & go(X,T) & (switch(X,s1) = out1 & at(X,T,s1) | switch(X,s2) = out1 & at(X,T,s2)) <-> at(succ(X),T,out1))) # label(out1ax1) # label(axiom) # label(non_clause).  [assumption].
+9 (all X all T (train(T) & go(X,T) & open(X,in2) & at(X,T,in2) <-> at(succ(X),T,s2))) # label(s2ax1) # label(axiom) # label(non_clause).  [assumption].
+10 (all X all T (train(T) & go(X,T) & open(X,in1) & at(X,T,in1) <-> at(succ(X),T,s1))) # label(s1ax1) # label(axiom) # label(non_clause).  [assumption].
+11 in2 != in1 & in2 != s2 & in2 != s1 & in2 != out2 & in2 != out1 & in1 != s2 & in1 != s1 & in1 != out2 & in1 != out1 & s2 != s1 & s2 != out2 & s2 != out1 & s1 != out2 & s1 != out1 & out2 != out1 # label(nodesExclusivity) # label(axiom) # label(non_clause).  [assumption].
+12 (all X all T (at(X,T,out2) -> -at(succ(X),T,out2))) # label(disappearout2) # label(axiom) # label(non_clause).  [assumption].
+13 (all X all T (at(X,T,out1) -> -at(succ(X),T,out1))) # label(disappearout1) # label(axiom) # label(non_clause).  [assumption].
+14 (all X all T all N1 all N2 (at(X,T,N1) & at(X,T,N2) -> N1 = N2)) # label(positionInOneNodeAtTime) # label(axiom) # label(non_clause).  [assumption].
+15 (all X all T1 all T2 (at(X,T1,in2) & T1 != T2 -> -at(X,T2,in2))) # label(onlyOneTrainin2) # label(axiom) # label(non_clause).  [assumption].
+16 (all X all T1 all T2 (at(X,T1,in1) & T1 != T2 -> -at(X,T2,in1))) # label(onlyOneTrainin1) # label(axiom) # label(non_clause).  [assumption].
+17 (all X all T (at(succ(X),T,in2) <-> appear(X,T,in2) | at(X,T,in2) & (-go(X,T) | -open(X,in2)))) # label(appearin2) # label(axiom) # label(non_clause).  [assumption].
+18 (all X all T (at(succ(X),T,in1) <-> appear(X,T,in1) | at(X,T,in1) & (-go(X,T) | -open(X,in1)))) # label(appearin1) # label(axiom) # label(non_clause).  [assumption].
+19 (all T (goal(T) = out2 | goal(T) = out1)) # label(trainGoals) # label(axiom) # label(non_clause).  [assumption].
+20 (all X (succ(X) != X -> (clockOrder(X) = in2 <-> clockOrder(succ(X)) = in1))) # label(clockOrderin2) # label(axiom) # label(non_clause).  [assumption].
+21 (all X (succ(X) != X -> (clockOrder(X) = in1 <-> clockOrder(succ(X)) = in2))) # label(clockOrderin1) # label(axiom) # label(non_clause).  [assumption].
+22 (all X (clockOrder(X) = in2 | clockOrder(X) = in1)) # label(clockPossibilities) # label(axiom) # label(non_clause).  [assumption].
+23 (all X (configuration(X,path0) <-> switch(X,s1) = out2)) # label(switchesConfiguration0) # label(axiom) # label(non_clause).  [assumption].
+24 (all X (configuration(X,path1) <-> switch(X,s2) = out2)) # label(switchesConfiguration1) # label(axiom) # label(non_clause).  [assumption].
+25 (all X (configuration(X,path2) <-> switch(X,s1) = out1)) # label(switchesConfiguration2) # label(axiom) # label(non_clause).  [assumption].
+26 (all X (configuration(X,path3) <-> switch(X,s2) = out1)) # label(switchesConfiguration3) # label(axiom) # label(non_clause).  [assumption].
+27 (all X all T (free(X,path0) <-> -at(X,T,s1))) # label(freeRoute0) # label(axiom) # label(non_clause).  [assumption].
+28 (all X all T (free(X,path1) <-> -at(X,T,s2))) # label(freeRoute1) # label(axiom) # label(non_clause).  [assumption].
+29 (all X all T (free(X,path2) <-> -at(X,T,s1))) # label(freeRoute2) # label(axiom) # label(non_clause).  [assumption].
+30 (all X all T (free(X,path3) <-> -at(X,T,s2))) # label(freeRoute3) # label(axiom) # label(non_clause).  [assumption].
+31 (all X (nonconflicting(X,path0) <-> free(X,path0) & free(X,path1) & free(X,path2))) # label(nonconflicting0) # label(axiom) # label(non_clause).  [assumption].
+32 (all X (nonconflicting(X,path1) <-> free(X,path1) & free(X,path0) & free(X,path3))) # label(nonconflicting1) # label(axiom) # label(non_clause).  [assumption].
+33 (all X (nonconflicting(X,path2) <-> free(X,path2) & free(X,path0) & free(X,path3))) # label(nonconflicting2) # label(axiom) # label(non_clause).  [assumption].
+34 (all X (nonconflicting(X,path3) <-> free(X,path3) & free(X,path1) & free(X,path2))) # label(nonconflicting3) # label(axiom) # label(non_clause).  [assumption].
+35 path0 != path1 & path0 != path2 & path0 != path3 & path1 != path2 & path1 != path3 & path2 != path3 # label(routesExclusivity) # label(axiom) # label(non_clause).  [assumption].
+36 (all X (available(X,path0) <-> nonconflicting(X,path0) & configuration(X,path0))) # label(availableRoute0) # label(axiom) # label(non_clause).  [assumption].
+37 (all X (available(X,path1) <-> nonconflicting(X,path1) & configuration(X,path1))) # label(availableRoute1) # label(axiom) # label(non_clause).  [assumption].
+38 (all X (available(X,path2) <-> nonconflicting(X,path2) & configuration(X,path2))) # label(availableRoute2) # label(axiom) # label(non_clause).  [assumption].
+39 (all X (available(X,path3) <-> nonconflicting(X,path3) & configuration(X,path3))) # label(availableRoute3) # label(axiom) # label(non_clause).  [assumption].
+40 (all X exists T (wantsToGo(X,in2,out2) <-> at(X,T,in2) & goal(T) = out2)) # label(wantsToGoin2out2) # label(axiom) # label(non_clause).  [assumption].
+41 (all X exists T (wantsToGo(X,in2,out1) <-> at(X,T,in2) & goal(T) = out1)) # label(wantsToGoin2out1) # label(axiom) # label(non_clause).  [assumption].
+42 (all X exists T (wantsToGo(X,in1,out2) <-> at(X,T,in1) & goal(T) = out2)) # label(wantsToGoin1out2) # label(axiom) # label(non_clause).  [assumption].
+43 (all X exists T (wantsToGo(X,in1,out1) <-> at(X,T,in1) & goal(T) = out1)) # label(wantsToGoin1out1) # label(axiom) # label(non_clause).  [assumption].
+44 (all X (toBeUsed(X,path0) <-> available(X,path0) & clockOrder(X) = in1 & wantsToGo(X,in1,out2))) # label(pathToBeUsed0) # label(axiom) # label(non_clause).  [assumption].
+45 (all X (toBeUsed(X,path1) <-> available(X,path1) & clockOrder(X) = in2 & wantsToGo(X,in2,out2))) # label(pathToBeUsed1) # label(axiom) # label(non_clause).  [assumption].
+46 (all X (toBeUsed(X,path2) <-> available(X,path2) & clockOrder(X) = in1 & wantsToGo(X,in1,out1))) # label(pathToBeUsed2) # label(axiom) # label(non_clause).  [assumption].
+47 (all X (toBeUsed(X,path3) <-> available(X,path3) & clockOrder(X) = in2 & wantsToGo(X,in2,out1))) # label(pathToBeUsed3) # label(axiom) # label(non_clause).  [assumption].
+48 (all X all P (configuration(succ(X),P) <-> configuration(X,P) & -free(X,P) | toBeUsed(X,P))) # label(setPath) # label(axiom) # label(non_clause).  [assumption].
+49 (all X (open(succ(X),in2) <-> toBeUsed(X,path1) | toBeUsed(X,path3))) # label(openGatein2) # label(axiom) # label(non_clause).  [assumption].
+50 (all X (open(succ(X),in1) <-> toBeUsed(X,path0) | toBeUsed(X,path2))) # label(openGatein1) # label(axiom) # label(non_clause).  [assumption].
+51 (exists X exists Y (at(X,T,in2) & less(X,Y) -> open(X,in2))) # label(willOpenin2) # label(conjecture) # label(non_clause) # label(goal).  [goal].
+
+============================== end of process non-clausal formulas ===
+
+============================== PROCESS INITIAL CLAUSES ===============
+
+% Clauses before input processing:
+
+formulas(usable).
+end_of_list.
+
+formulas(sos).
+-less(A,B) | -less(B,A) | B = A # label(antisymmetry) # label(axiom).  [clausify(1)].
+-less(A,B) | -less(B,C) | less(A,C) # label(transitivity) # label(axiom).  [clausify(2)].
+less(A,B) | less(B,A) # label(totality) # label(axiom).  [clausify(3)].
+less(A,succ(A)) # label(succ) # label(axiom).  [clausify(4)].
+less(A,B) | less(succ(B),A) # label(succ) # label(axiom).  [clausify(4)].
+pred(succ(A)) = A # label(pred) # label(axiom).  [clausify(5)].
+succ(pred(A)) = A # label(pred) # label(axiom).  [clausify(5)].
+-train(A) | less(B,f1(B,A)) # label(go) # label(axiom).  [clausify(6)].
+-train(A) | go(f1(B,A),A) # label(go) # label(axiom).  [clausify(6)].
+-train(A) | -go(B,A) | switch(B,s1) != out2 | -at(B,A,s1) | at(succ(B),A,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+-train(A) | -go(B,A) | switch(B,s2) != out2 | -at(B,A,s2) | at(succ(B),A,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+train(A) | -at(succ(B),A,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+go(A,B) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+switch(A,s1) = out2 | switch(A,s2) = out2 | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+switch(A,s1) = out2 | at(A,B,s2) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+at(A,B,s1) | switch(A,s2) = out2 | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+at(A,B,s1) | at(A,B,s2) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+-train(A) | -go(B,A) | switch(B,s1) != out1 | -at(B,A,s1) | at(succ(B),A,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+-train(A) | -go(B,A) | switch(B,s2) != out1 | -at(B,A,s2) | at(succ(B),A,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+train(A) | -at(succ(B),A,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+go(A,B) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+switch(A,s1) = out1 | switch(A,s2) = out1 | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+switch(A,s1) = out1 | at(A,B,s2) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+at(A,B,s1) | switch(A,s2) = out1 | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+at(A,B,s1) | at(A,B,s2) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+-train(A) | -go(B,A) | -open(B,in2) | -at(B,A,in2) | at(succ(B),A,s2) # label(s2ax1) # label(axiom).  [clausify(9)].
+train(A) | -at(succ(B),A,s2) # label(s2ax1) # label(axiom).  [clausify(9)].
+go(A,B) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).  [clausify(9)].
+open(A,in2) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).  [clausify(9)].
+at(A,B,in2) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).  [clausify(9)].
+-train(A) | -go(B,A) | -open(B,in1) | -at(B,A,in1) | at(succ(B),A,s1) # label(s1ax1) # label(axiom).  [clausify(10)].
+train(A) | -at(succ(B),A,s1) # label(s1ax1) # label(axiom).  [clausify(10)].
+go(A,B) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).  [clausify(10)].
+open(A,in1) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).  [clausify(10)].
+at(A,B,in1) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).  [clausify(10)].
+in1 != in2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+in2 != s2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+in2 != s1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+in2 != out2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+in2 != out1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+in1 != s2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+in1 != s1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+in1 != out2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+in1 != out1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+s2 != s1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+s2 != out2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+out1 != s2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+out2 != s1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+out1 != s1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+out1 != out2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+-at(A,B,out2) | -at(succ(A),B,out2) # label(disappearout2) # label(axiom).  [clausify(12)].
+-at(A,B,out1) | -at(succ(A),B,out1) # label(disappearout1) # label(axiom).  [clausify(13)].
+-at(A,B,C) | -at(A,B,D) | D = C # label(positionInOneNodeAtTime) # label(axiom).  [clausify(14)].
+-at(A,B,in2) | C = B | -at(A,C,in2) # label(onlyOneTrainin2) # label(axiom).  [clausify(15)].
+-at(A,B,in1) | C = B | -at(A,C,in1) # label(onlyOneTrainin1) # label(axiom).  [clausify(16)].
+-at(succ(A),B,in2) | appear(A,B,in2) | at(A,B,in2) # label(appearin2) # label(axiom).  [clausify(17)].
+-at(succ(A),B,in2) | appear(A,B,in2) | -go(A,B) | -open(A,in2) # label(appearin2) # label(axiom).  [clausify(17)].
+at(succ(A),B,in2) | -appear(A,B,in2) # label(appearin2) # label(axiom).  [clausify(17)].
+at(succ(A),B,in2) | -at(A,B,in2) | go(A,B) # label(appearin2) # label(axiom).  [clausify(17)].
+at(succ(A),B,in2) | -at(A,B,in2) | open(A,in2) # label(appearin2) # label(axiom).  [clausify(17)].
+-at(succ(A),B,in1) | appear(A,B,in1) | at(A,B,in1) # label(appearin1) # label(axiom).  [clausify(18)].
+-at(succ(A),B,in1) | appear(A,B,in1) | -go(A,B) | -open(A,in1) # label(appearin1) # label(axiom).  [clausify(18)].
+at(succ(A),B,in1) | -appear(A,B,in1) # label(appearin1) # label(axiom).  [clausify(18)].
+at(succ(A),B,in1) | -at(A,B,in1) | go(A,B) # label(appearin1) # label(axiom).  [clausify(18)].
+at(succ(A),B,in1) | -at(A,B,in1) | open(A,in1) # label(appearin1) # label(axiom).  [clausify(18)].
+goal(A) = out2 | goal(A) = out1 # label(trainGoals) # label(axiom).  [clausify(19)].
+succ(A) = A | clockOrder(A) != in2 | clockOrder(succ(A)) = in1 # label(clockOrderin2) # label(axiom).  [clausify(20)].
+succ(A) = A | clockOrder(A) = in2 | clockOrder(succ(A)) != in1 # label(clockOrderin2) # label(axiom).  [clausify(20)].
+succ(A) = A | clockOrder(A) != in1 | clockOrder(succ(A)) = in2 # label(clockOrderin1) # label(axiom).  [clausify(21)].
+succ(A) = A | clockOrder(A) = in1 | clockOrder(succ(A)) != in2 # label(clockOrderin1) # label(axiom).  [clausify(21)].
+clockOrder(A) = in2 | clockOrder(A) = in1 # label(clockPossibilities) # label(axiom).  [clausify(22)].
+-configuration(A,path0) | switch(A,s1) = out2 # label(switchesConfiguration0) # label(axiom).  [clausify(23)].
+configuration(A,path0) | switch(A,s1) != out2 # label(switchesConfiguration0) # label(axiom).  [clausify(23)].
+-configuration(A,path1) | switch(A,s2) = out2 # label(switchesConfiguration1) # label(axiom).  [clausify(24)].
+configuration(A,path1) | switch(A,s2) != out2 # label(switchesConfiguration1) # label(axiom).  [clausify(24)].
+-configuration(A,path2) | switch(A,s1) = out1 # label(switchesConfiguration2) # label(axiom).  [clausify(25)].
+configuration(A,path2) | switch(A,s1) != out1 # label(switchesConfiguration2) # label(axiom).  [clausify(25)].
+-configuration(A,path3) | switch(A,s2) = out1 # label(switchesConfiguration3) # label(axiom).  [clausify(26)].
+configuration(A,path3) | switch(A,s2) != out1 # label(switchesConfiguration3) # label(axiom).  [clausify(26)].
+-free(A,path0) | -at(A,B,s1) # label(freeRoute0) # label(axiom).  [clausify(27)].
+free(A,path0) | at(A,B,s1) # label(freeRoute0) # label(axiom).  [clausify(27)].
+-free(A,path1) | -at(A,B,s2) # label(freeRoute1) # label(axiom).  [clausify(28)].
+free(A,path1) | at(A,B,s2) # label(freeRoute1) # label(axiom).  [clausify(28)].
+-free(A,path2) | -at(A,B,s1) # label(freeRoute2) # label(axiom).  [clausify(29)].
+free(A,path2) | at(A,B,s1) # label(freeRoute2) # label(axiom).  [clausify(29)].
+-free(A,path3) | -at(A,B,s2) # label(freeRoute3) # label(axiom).  [clausify(30)].
+free(A,path3) | at(A,B,s2) # label(freeRoute3) # label(axiom).  [clausify(30)].
+-nonconflicting(A,path0) | free(A,path0) # label(nonconflicting0) # label(axiom).  [clausify(31)].
+-nonconflicting(A,path0) | free(A,path1) # label(nonconflicting0) # label(axiom).  [clausify(31)].
+-nonconflicting(A,path0) | free(A,path2) # label(nonconflicting0) # label(axiom).  [clausify(31)].
+nonconflicting(A,path0) | -free(A,path0) | -free(A,path1) | -free(A,path2) # label(nonconflicting0) # label(axiom).  [clausify(31)].
+-nonconflicting(A,path1) | free(A,path1) # label(nonconflicting1) # label(axiom).  [clausify(32)].
+-nonconflicting(A,path1) | free(A,path0) # label(nonconflicting1) # label(axiom).  [clausify(32)].
+-nonconflicting(A,path1) | free(A,path3) # label(nonconflicting1) # label(axiom).  [clausify(32)].
+nonconflicting(A,path1) | -free(A,path1) | -free(A,path0) | -free(A,path3) # label(nonconflicting1) # label(axiom).  [clausify(32)].
+-nonconflicting(A,path2) | free(A,path2) # label(nonconflicting2) # label(axiom).  [clausify(33)].
+-nonconflicting(A,path2) | free(A,path0) # label(nonconflicting2) # label(axiom).  [clausify(33)].
+-nonconflicting(A,path2) | free(A,path3) # label(nonconflicting2) # label(axiom).  [clausify(33)].
+nonconflicting(A,path2) | -free(A,path2) | -free(A,path0) | -free(A,path3) # label(nonconflicting2) # label(axiom).  [clausify(33)].
+-nonconflicting(A,path3) | free(A,path3) # label(nonconflicting3) # label(axiom).  [clausify(34)].
+-nonconflicting(A,path3) | free(A,path1) # label(nonconflicting3) # label(axiom).  [clausify(34)].
+-nonconflicting(A,path3) | free(A,path2) # label(nonconflicting3) # label(axiom).  [clausify(34)].
+nonconflicting(A,path3) | -free(A,path3) | -free(A,path1) | -free(A,path2) # label(nonconflicting3) # label(axiom).  [clausify(34)].
+path1 != path0 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+path2 != path0 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+path3 != path0 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+path2 != path1 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+path3 != path1 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+path3 != path2 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+-available(A,path0) | nonconflicting(A,path0) # label(availableRoute0) # label(axiom).  [clausify(36)].
+-available(A,path0) | configuration(A,path0) # label(availableRoute0) # label(axiom).  [clausify(36)].
+available(A,path0) | -nonconflicting(A,path0) | -configuration(A,path0) # label(availableRoute0) # label(axiom).  [clausify(36)].
+-available(A,path1) | nonconflicting(A,path1) # label(availableRoute1) # label(axiom).  [clausify(37)].
+-available(A,path1) | configuration(A,path1) # label(availableRoute1) # label(axiom).  [clausify(37)].
+available(A,path1) | -nonconflicting(A,path1) | -configuration(A,path1) # label(availableRoute1) # label(axiom).  [clausify(37)].
+-available(A,path2) | nonconflicting(A,path2) # label(availableRoute2) # label(axiom).  [clausify(38)].
+-available(A,path2) | configuration(A,path2) # label(availableRoute2) # label(axiom).  [clausify(38)].
+available(A,path2) | -nonconflicting(A,path2) | -configuration(A,path2) # label(availableRoute2) # label(axiom).  [clausify(38)].
+-available(A,path3) | nonconflicting(A,path3) # label(availableRoute3) # label(axiom).  [clausify(39)].
+-available(A,path3) | configuration(A,path3) # label(availableRoute3) # label(axiom).  [clausify(39)].
+available(A,path3) | -nonconflicting(A,path3) | -configuration(A,path3) # label(availableRoute3) # label(axiom).  [clausify(39)].
+-wantsToGo(A,in2,out2) | at(A,f2(A),in2) # label(wantsToGoin2out2) # label(axiom).  [clausify(40)].
+-wantsToGo(A,in2,out2) | goal(f2(A)) = out2 # label(wantsToGoin2out2) # label(axiom).  [clausify(40)].
+wantsToGo(A,in2,out2) | -at(A,f2(A),in2) | goal(f2(A)) != out2 # label(wantsToGoin2out2) # label(axiom).  [clausify(40)].
+-wantsToGo(A,in2,out1) | at(A,f3(A),in2) # label(wantsToGoin2out1) # label(axiom).  [clausify(41)].
+-wantsToGo(A,in2,out1) | goal(f3(A)) = out1 # label(wantsToGoin2out1) # label(axiom).  [clausify(41)].
+wantsToGo(A,in2,out1) | -at(A,f3(A),in2) | goal(f3(A)) != out1 # label(wantsToGoin2out1) # label(axiom).  [clausify(41)].
+-wantsToGo(A,in1,out2) | at(A,f4(A),in1) # label(wantsToGoin1out2) # label(axiom).  [clausify(42)].
+-wantsToGo(A,in1,out2) | goal(f4(A)) = out2 # label(wantsToGoin1out2) # label(axiom).  [clausify(42)].
+wantsToGo(A,in1,out2) | -at(A,f4(A),in1) | goal(f4(A)) != out2 # label(wantsToGoin1out2) # label(axiom).  [clausify(42)].
+-wantsToGo(A,in1,out1) | at(A,f5(A),in1) # label(wantsToGoin1out1) # label(axiom).  [clausify(43)].
+-wantsToGo(A,in1,out1) | goal(f5(A)) = out1 # label(wantsToGoin1out1) # label(axiom).  [clausify(43)].
+wantsToGo(A,in1,out1) | -at(A,f5(A),in1) | goal(f5(A)) != out1 # label(wantsToGoin1out1) # label(axiom).  [clausify(43)].
+-toBeUsed(A,path0) | available(A,path0) # label(pathToBeUsed0) # label(axiom).  [clausify(44)].
+-toBeUsed(A,path0) | clockOrder(A) = in1 # label(pathToBeUsed0) # label(axiom).  [clausify(44)].
+-toBeUsed(A,path0) | wantsToGo(A,in1,out2) # label(pathToBeUsed0) # label(axiom).  [clausify(44)].
+toBeUsed(A,path0) | -available(A,path0) | clockOrder(A) != in1 | -wantsToGo(A,in1,out2) # label(pathToBeUsed0) # label(axiom).  [clausify(44)].
+-toBeUsed(A,path1) | available(A,path1) # label(pathToBeUsed1) # label(axiom).  [clausify(45)].
+-toBeUsed(A,path1) | clockOrder(A) = in2 # label(pathToBeUsed1) # label(axiom).  [clausify(45)].
+-toBeUsed(A,path1) | wantsToGo(A,in2,out2) # label(pathToBeUsed1) # label(axiom).  [clausify(45)].
+toBeUsed(A,path1) | -available(A,path1) | clockOrder(A) != in2 | -wantsToGo(A,in2,out2) # label(pathToBeUsed1) # label(axiom).  [clausify(45)].
+-toBeUsed(A,path2) | available(A,path2) # label(pathToBeUsed2) # label(axiom).  [clausify(46)].
+-toBeUsed(A,path2) | clockOrder(A) = in1 # label(pathToBeUsed2) # label(axiom).  [clausify(46)].
+-toBeUsed(A,path2) | wantsToGo(A,in1,out1) # label(pathToBeUsed2) # label(axiom).  [clausify(46)].
+toBeUsed(A,path2) | -available(A,path2) | clockOrder(A) != in1 | -wantsToGo(A,in1,out1) # label(pathToBeUsed2) # label(axiom).  [clausify(46)].
+-toBeUsed(A,path3) | available(A,path3) # label(pathToBeUsed3) # label(axiom).  [clausify(47)].
+-toBeUsed(A,path3) | clockOrder(A) = in2 # label(pathToBeUsed3) # label(axiom).  [clausify(47)].
+-toBeUsed(A,path3) | wantsToGo(A,in2,out1) # label(pathToBeUsed3) # label(axiom).  [clausify(47)].
+toBeUsed(A,path3) | -available(A,path3) | clockOrder(A) != in2 | -wantsToGo(A,in2,out1) # label(pathToBeUsed3) # label(axiom).  [clausify(47)].
+-configuration(succ(A),B) | configuration(A,B) | toBeUsed(A,B) # label(setPath) # label(axiom).  [clausify(48)].
+-configuration(succ(A),B) | -free(A,B) | toBeUsed(A,B) # label(setPath) # label(axiom).  [clausify(48)].
+configuration(succ(A),B) | -configuration(A,B) | free(A,B) # label(setPath) # label(axiom).  [clausify(48)].
+configuration(succ(A),B) | -toBeUsed(A,B) # label(setPath) # label(axiom).  [clausify(48)].
+-open(succ(A),in2) | toBeUsed(A,path1) | toBeUsed(A,path3) # label(openGatein2) # label(axiom).  [clausify(49)].
+open(succ(A),in2) | -toBeUsed(A,path1) # label(openGatein2) # label(axiom).  [clausify(49)].
+open(succ(A),in2) | -toBeUsed(A,path3) # label(openGatein2) # label(axiom).  [clausify(49)].
+-open(succ(A),in1) | toBeUsed(A,path0) | toBeUsed(A,path2) # label(openGatein1) # label(axiom).  [clausify(50)].
+open(succ(A),in1) | -toBeUsed(A,path0) # label(openGatein1) # label(axiom).  [clausify(50)].
+open(succ(A),in1) | -toBeUsed(A,path2) # label(openGatein1) # label(axiom).  [clausify(50)].
+at(A,c1,in2) # label(willOpenin2) # label(conjecture).  [deny(51)].
+less(A,B) # label(willOpenin2) # label(conjecture).  [deny(51)].
+-open(A,in2) # label(willOpenin2) # label(conjecture).  [deny(51)].
+end_of_list.
+
+formulas(demodulators).
+end_of_list.
+
+============================== PREDICATE ELIMINATION =================
+
+Eliminating train/1
+52 train(A) | -at(succ(B),A,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+53 -train(A) | less(B,f1(B,A)) # label(go) # label(axiom).  [clausify(6)].
+54 -train(A) | go(f1(B,A),A) # label(go) # label(axiom).  [clausify(6)].
+55 -train(A) | -go(B,A) | switch(B,s1) != out2 | -at(B,A,s1) | at(succ(B),A,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+56 -train(A) | -go(B,A) | switch(B,s2) != out2 | -at(B,A,s2) | at(succ(B),A,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+Derived: -at(succ(A),B,out2) | go(f1(C,B),B).  [resolve(52,a,54,a)].
+Derived: -at(succ(A),B,out2) | -go(C,B) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2).  [resolve(52,a,55,a)].
+Derived: -at(succ(A),B,out2) | -go(C,B) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2).  [resolve(52,a,56,a)].
+57 -train(A) | -go(B,A) | switch(B,s1) != out1 | -at(B,A,s1) | at(succ(B),A,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+Derived: -go(A,B) | switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2).  [resolve(57,a,52,a)].
+58 -train(A) | -go(B,A) | switch(B,s2) != out1 | -at(B,A,s2) | at(succ(B),A,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+Derived: -go(A,B) | switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2).  [resolve(58,a,52,a)].
+59 train(A) | -at(succ(B),A,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+Derived: -at(succ(A),B,out1) | go(f1(C,B),B).  [resolve(59,a,54,a)].
+Derived: -at(succ(A),B,out1) | -go(C,B) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2).  [resolve(59,a,55,a)].
+Derived: -at(succ(A),B,out1) | -go(C,B) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2).  [resolve(59,a,56,a)].
+Derived: -at(succ(A),B,out1) | -go(C,B) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1).  [resolve(59,a,57,a)].
+Derived: -at(succ(A),B,out1) | -go(C,B) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1).  [resolve(59,a,58,a)].
+60 -train(A) | -go(B,A) | -open(B,in2) | -at(B,A,in2) | at(succ(B),A,s2) # label(s2ax1) # label(axiom).  [clausify(9)].
+61 train(A) | -at(succ(B),A,s2) # label(s2ax1) # label(axiom).  [clausify(9)].
+Derived: -at(succ(A),B,s2) | go(f1(C,B),B).  [resolve(61,a,54,a)].
+Derived: -at(succ(A),B,s2) | -go(C,B) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2).  [resolve(61,a,55,a)].
+Derived: -at(succ(A),B,s2) | -go(C,B) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2).  [resolve(61,a,56,a)].
+Derived: -at(succ(A),B,s2) | -go(C,B) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1).  [resolve(61,a,57,a)].
+Derived: -at(succ(A),B,s2) | -go(C,B) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1).  [resolve(61,a,58,a)].
+62 -train(A) | -go(B,A) | -open(B,in1) | -at(B,A,in1) | at(succ(B),A,s1) # label(s1ax1) # label(axiom).  [clausify(10)].
+Derived: -go(A,B) | -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2).  [resolve(62,a,52,a)].
+Derived: -go(A,B) | -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out1).  [resolve(62,a,59,a)].
+Derived: -go(A,B) | -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,s2).  [resolve(62,a,61,a)].
+63 train(A) | -at(succ(B),A,s1) # label(s1ax1) # label(axiom).  [clausify(10)].
+Derived: -at(succ(A),B,s1) | go(f1(C,B),B).  [resolve(63,a,54,a)].
+Derived: -at(succ(A),B,s1) | -go(C,B) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2).  [resolve(63,a,55,a)].
+Derived: -at(succ(A),B,s1) | -go(C,B) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2).  [resolve(63,a,56,a)].
+Derived: -at(succ(A),B,s1) | -go(C,B) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1).  [resolve(63,a,57,a)].
+Derived: -at(succ(A),B,s1) | -go(C,B) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1).  [resolve(63,a,58,a)].
+Derived: -at(succ(A),B,s1) | -go(C,B) | -open(C,in1) | -at(C,B,in1) | at(succ(C),B,s1).  [resolve(63,a,62,a)].
+
+Eliminating go/2
+64 -at(succ(A),B,in2) | appear(A,B,in2) | -go(A,B) | -open(A,in2) # label(appearin2) # label(axiom).  [clausify(17)].
+65 go(A,B) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+66 go(A,B) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+67 go(A,B) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).  [clausify(9)].
+68 go(A,B) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).  [clausify(10)].
+69 at(succ(A),B,in2) | -at(A,B,in2) | go(A,B) # label(appearin2) # label(axiom).  [clausify(17)].
+70 -at(succ(A),B,in1) | appear(A,B,in1) | -go(A,B) | -open(A,in1) # label(appearin1) # label(axiom).  [clausify(18)].
+Derived: -at(succ(A),B,in1) | appear(A,B,in1) | -open(A,in1) | -at(succ(A),B,out2).  [resolve(70,c,65,a)].
+Derived: -at(succ(A),B,in1) | appear(A,B,in1) | -open(A,in1) | -at(succ(A),B,out1).  [resolve(70,c,66,a)].
+Derived: -at(succ(A),B,in1) | appear(A,B,in1) | -open(A,in1) | -at(succ(A),B,s2).  [resolve(70,c,67,a)].
+Derived: -at(succ(A),B,in1) | appear(A,B,in1) | -open(A,in1) | -at(succ(A),B,s1).  [resolve(70,c,68,a)].
+Derived: -at(succ(A),B,in1) | appear(A,B,in1) | -open(A,in1) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(70,c,69,c)].
+71 at(succ(A),B,in1) | -at(A,B,in1) | go(A,B) # label(appearin1) # label(axiom).  [clausify(18)].
+72 -at(succ(A),B,out2) | go(f1(C,B),B).  [resolve(52,a,54,a)].
+Derived: -at(succ(A),B,out2) | -at(succ(f1(C,B)),B,in2) | appear(f1(C,B),B,in2) | -open(f1(C,B),in2).  [resolve(72,b,64,c)].
+Derived: -at(succ(A),B,out2) | -at(succ(f1(C,B)),B,in1) | appear(f1(C,B),B,in1) | -open(f1(C,B),in1).  [resolve(72,b,70,c)].
+73 -at(succ(A),B,out2) | -go(C,B) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2).  [resolve(52,a,55,a)].
+Derived: -at(succ(A),B,out2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,out1).  [resolve(73,b,66,a)].
+Derived: -at(succ(A),B,out2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(73,b,67,a)].
+Derived: -at(succ(A),B,out2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(73,b,68,a)].
+Derived: -at(succ(A),B,out2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(73,b,69,c)].
+Derived: -at(succ(A),B,out2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(73,b,71,c)].
+Derived: -at(succ(A),B,out2) | switch(f1(C,B),s1) != out2 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,out2).  [resolve(73,b,72,b)].
+74 -at(succ(A),B,out2) | -go(C,B) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2).  [resolve(52,a,56,a)].
+Derived: -at(succ(A),B,out2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,out1).  [resolve(74,b,66,a)].
+Derived: -at(succ(A),B,out2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(74,b,67,a)].
+Derived: -at(succ(A),B,out2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(74,b,68,a)].
+Derived: -at(succ(A),B,out2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(74,b,69,c)].
+Derived: -at(succ(A),B,out2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(74,b,71,c)].
+Derived: -at(succ(A),B,out2) | switch(f1(C,B),s2) != out2 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,out2).  [resolve(74,b,72,b)].
+75 -go(A,B) | switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2).  [resolve(57,a,52,a)].
+Derived: switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,out2).  [resolve(75,a,65,a)].
+Derived: switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,s2).  [resolve(75,a,67,a)].
+Derived: switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,s1).  [resolve(75,a,68,a)].
+Derived: switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(75,a,69,c)].
+Derived: switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2) | at(succ(A),B,in1) | -at(A,B,in1).  [resolve(75,a,71,c)].
+Derived: switch(f1(A,B),s1) != out1 | -at(f1(A,B),B,s1) | at(succ(f1(A,B)),B,out1) | -at(succ(C),B,out2) | -at(succ(D),B,out2).  [resolve(75,a,72,b)].
+76 -go(A,B) | switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2).  [resolve(58,a,52,a)].
+Derived: switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,out2).  [resolve(76,a,65,a)].
+Derived: switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,s2).  [resolve(76,a,67,a)].
+Derived: switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,s1).  [resolve(76,a,68,a)].
+Derived: switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(76,a,69,c)].
+Derived: switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2) | at(succ(A),B,in1) | -at(A,B,in1).  [resolve(76,a,71,c)].
+Derived: switch(f1(A,B),s2) != out1 | -at(f1(A,B),B,s2) | at(succ(f1(A,B)),B,out1) | -at(succ(C),B,out2) | -at(succ(D),B,out2).  [resolve(76,a,72,b)].
+77 -at(succ(A),B,out1) | go(f1(C,B),B).  [resolve(59,a,54,a)].
+Derived: -at(succ(A),B,out1) | -at(succ(f1(C,B)),B,in2) | appear(f1(C,B),B,in2) | -open(f1(C,B),in2).  [resolve(77,b,64,c)].
+Derived: -at(succ(A),B,out1) | -at(succ(f1(C,B)),B,in1) | appear(f1(C,B),B,in1) | -open(f1(C,B),in1).  [resolve(77,b,70,c)].
+78 -at(succ(A),B,out1) | -go(C,B) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2).  [resolve(59,a,55,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,out1).  [resolve(78,b,66,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(78,b,67,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(78,b,68,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(78,b,69,c)].
+Derived: -at(succ(A),B,out1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(78,b,71,c)].
+Derived: -at(succ(A),B,out1) | switch(f1(C,B),s1) != out2 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,out1).  [resolve(78,b,77,b)].
+79 -at(succ(A),B,out1) | -go(C,B) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2).  [resolve(59,a,56,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,out1).  [resolve(79,b,66,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(79,b,67,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(79,b,68,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(79,b,69,c)].
+Derived: -at(succ(A),B,out1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(79,b,71,c)].
+Derived: -at(succ(A),B,out1) | switch(f1(C,B),s2) != out2 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,out1).  [resolve(79,b,77,b)].
+80 -at(succ(A),B,out1) | -go(C,B) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1).  [resolve(59,a,57,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | -at(succ(C),B,s2).  [resolve(80,b,67,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(80,b,68,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(80,b,69,c)].
+Derived: -at(succ(A),B,out1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(80,b,71,c)].
+Derived: -at(succ(A),B,out1) | switch(f1(C,B),s1) != out1 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,out1).  [resolve(80,b,77,b)].
+81 -at(succ(A),B,out1) | -go(C,B) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1).  [resolve(59,a,58,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | -at(succ(C),B,s2).  [resolve(81,b,67,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(81,b,68,a)].
+Derived: -at(succ(A),B,out1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(81,b,69,c)].
+Derived: -at(succ(A),B,out1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(81,b,71,c)].
+Derived: -at(succ(A),B,out1) | switch(f1(C,B),s2) != out1 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,out1).  [resolve(81,b,77,b)].
+82 -at(succ(A),B,s2) | go(f1(C,B),B).  [resolve(61,a,54,a)].
+Derived: -at(succ(A),B,s2) | -at(succ(f1(C,B)),B,in2) | appear(f1(C,B),B,in2) | -open(f1(C,B),in2).  [resolve(82,b,64,c)].
+Derived: -at(succ(A),B,s2) | -at(succ(f1(C,B)),B,in1) | appear(f1(C,B),B,in1) | -open(f1(C,B),in1).  [resolve(82,b,70,c)].
+83 -at(succ(A),B,s2) | -go(C,B) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2).  [resolve(61,a,55,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(83,b,67,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(83,b,68,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(83,b,69,c)].
+Derived: -at(succ(A),B,s2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(83,b,71,c)].
+Derived: -at(succ(A),B,s2) | switch(f1(C,B),s1) != out2 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,s2).  [resolve(83,b,82,b)].
+84 -at(succ(A),B,s2) | -go(C,B) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2).  [resolve(61,a,56,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(84,b,67,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(84,b,68,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(84,b,69,c)].
+Derived: -at(succ(A),B,s2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(84,b,71,c)].
+Derived: -at(succ(A),B,s2) | switch(f1(C,B),s2) != out2 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,s2).  [resolve(84,b,82,b)].
+85 -at(succ(A),B,s2) | -go(C,B) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1).  [resolve(61,a,57,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | -at(succ(C),B,s2).  [resolve(85,b,67,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(85,b,68,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(85,b,69,c)].
+Derived: -at(succ(A),B,s2) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(85,b,71,c)].
+Derived: -at(succ(A),B,s2) | switch(f1(C,B),s1) != out1 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,s2).  [resolve(85,b,82,b)].
+86 -at(succ(A),B,s2) | -go(C,B) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1).  [resolve(61,a,58,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | -at(succ(C),B,s2).  [resolve(86,b,67,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(86,b,68,a)].
+Derived: -at(succ(A),B,s2) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(86,b,69,c)].
+Derived: -at(succ(A),B,s2) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(86,b,71,c)].
+Derived: -at(succ(A),B,s2) | switch(f1(C,B),s2) != out1 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,s2).  [resolve(86,b,82,b)].
+87 -go(A,B) | -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2).  [resolve(62,a,52,a)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2) | -at(succ(A),B,out2).  [resolve(87,a,65,a)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2) | -at(succ(A),B,out1).  [resolve(87,a,66,a)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2) | -at(succ(A),B,s2).  [resolve(87,a,67,a)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(87,a,69,c)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2) | at(succ(A),B,in1) | -at(A,B,in1).  [resolve(87,a,71,c)].
+Derived: -open(f1(A,B),in1) | -at(f1(A,B),B,in1) | at(succ(f1(A,B)),B,s1) | -at(succ(C),B,out2) | -at(succ(D),B,out2).  [resolve(87,a,72,b)].
+88 -go(A,B) | -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out1).  [resolve(62,a,59,a)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out1) | -at(succ(A),B,out1).  [resolve(88,a,66,a)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out1) | -at(succ(A),B,s2).  [resolve(88,a,67,a)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out1) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(88,a,69,c)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out1) | at(succ(A),B,in1) | -at(A,B,in1).  [resolve(88,a,71,c)].
+Derived: -open(f1(A,B),in1) | -at(f1(A,B),B,in1) | at(succ(f1(A,B)),B,s1) | -at(succ(C),B,out1) | -at(succ(D),B,out1).  [resolve(88,a,77,b)].
+89 -go(A,B) | -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,s2).  [resolve(62,a,61,a)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,s2) | -at(succ(A),B,s2).  [resolve(89,a,67,a)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,s2) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(89,a,69,c)].
+Derived: -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,s2) | at(succ(A),B,in1) | -at(A,B,in1).  [resolve(89,a,71,c)].
+Derived: -open(f1(A,B),in1) | -at(f1(A,B),B,in1) | at(succ(f1(A,B)),B,s1) | -at(succ(C),B,s2) | -at(succ(D),B,s2).  [resolve(89,a,82,b)].
+90 -at(succ(A),B,s1) | go(f1(C,B),B).  [resolve(63,a,54,a)].
+Derived: -at(succ(A),B,s1) | -at(succ(f1(C,B)),B,in2) | appear(f1(C,B),B,in2) | -open(f1(C,B),in2).  [resolve(90,b,64,c)].
+Derived: -at(succ(A),B,s1) | -at(succ(f1(C,B)),B,in1) | appear(f1(C,B),B,in1) | -open(f1(C,B),in1).  [resolve(90,b,70,c)].
+91 -at(succ(A),B,s1) | -go(C,B) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2).  [resolve(63,a,55,a)].
+Derived: -at(succ(A),B,s1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(91,b,68,a)].
+Derived: -at(succ(A),B,s1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(91,b,69,c)].
+Derived: -at(succ(A),B,s1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(91,b,71,c)].
+Derived: -at(succ(A),B,s1) | switch(f1(C,B),s1) != out2 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,s1).  [resolve(91,b,90,b)].
+92 -at(succ(A),B,s1) | -go(C,B) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2).  [resolve(63,a,56,a)].
+Derived: -at(succ(A),B,s1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(92,b,68,a)].
+Derived: -at(succ(A),B,s1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(92,b,69,c)].
+Derived: -at(succ(A),B,s1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(92,b,71,c)].
+Derived: -at(succ(A),B,s1) | switch(f1(C,B),s2) != out2 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,s1).  [resolve(92,b,90,b)].
+93 -at(succ(A),B,s1) | -go(C,B) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1).  [resolve(63,a,57,a)].
+Derived: -at(succ(A),B,s1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(93,b,68,a)].
+Derived: -at(succ(A),B,s1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(93,b,69,c)].
+Derived: -at(succ(A),B,s1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(93,b,71,c)].
+Derived: -at(succ(A),B,s1) | switch(f1(C,B),s1) != out1 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,s1).  [resolve(93,b,90,b)].
+94 -at(succ(A),B,s1) | -go(C,B) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1).  [resolve(63,a,58,a)].
+Derived: -at(succ(A),B,s1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(94,b,68,a)].
+Derived: -at(succ(A),B,s1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(94,b,69,c)].
+Derived: -at(succ(A),B,s1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(94,b,71,c)].
+Derived: -at(succ(A),B,s1) | switch(f1(C,B),s2) != out1 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,s1).  [resolve(94,b,90,b)].
+95 -at(succ(A),B,s1) | -go(C,B) | -open(C,in1) | -at(C,B,in1) | at(succ(C),B,s1).  [resolve(63,a,62,a)].
+Derived: -at(succ(A),B,s1) | -open(C,in1) | -at(C,B,in1) | at(succ(C),B,s1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(95,b,69,c)].
+Derived: -at(succ(A),B,s1) | -open(C,in1) | -at(C,B,in1) | at(succ(C),B,s1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(95,b,71,c)].
+Derived: -at(succ(A),B,s1) | -open(f1(C,B),in1) | -at(f1(C,B),B,in1) | at(succ(f1(C,B)),B,s1) | -at(succ(D),B,s1).  [resolve(95,b,90,b)].
+
+============================== end predicate elimination =============
+
+Auto_denials:  (non-Horn, no changes).
+
+Term ordering decisions:
+Predicate symbol precedence:  predicate_order([ =, open, free, toBeUsed, nonconflicting, configuration, available, less, at, wantsToGo, appear ]).
+Function symbol precedence:  function_order([ s1, out2, out1, s2, in1, in2, path0, path1, path2, path3, c1, switch, f1, succ, clockOrder, goal, pred, f2, f3, f4, f5 ]).
+After inverse_order:  (no changes).
+Unfolding symbols: (none).
+
+Auto_inference settings:
+  % set(paramodulation).  % (positive equality literals)
+  % set(binary_resolution).  % (non-Horn)
+
+Auto_process settings:
+  % set(factor).  % (non-Horn)
+  % set(unit_deletion).  % (non-Horn)
+
+kept:      96 -less(A,B) | -less(B,A) | B = A # label(antisymmetry) # label(axiom).  [clausify(1)].
+kept:      97 -less(A,B) | -less(B,C) | less(A,C) # label(transitivity) # label(axiom).  [clausify(2)].
+kept:      98 less(A,B) | less(B,A) # label(totality) # label(axiom).  [clausify(3)].
+kept:      99 less(A,succ(A)) # label(succ) # label(axiom).  [clausify(4)].
+kept:      100 less(A,B) | less(succ(B),A) # label(succ) # label(axiom).  [clausify(4)].
+kept:      101 pred(succ(A)) = A # label(pred) # label(axiom).  [clausify(5)].
+kept:      102 succ(pred(A)) = A # label(pred) # label(axiom).  [clausify(5)].
+kept:      103 switch(A,s1) = out2 | switch(A,s2) = out2 | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+kept:      104 switch(A,s1) = out2 | at(A,B,s2) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+kept:      105 at(A,B,s1) | switch(A,s2) = out2 | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+kept:      106 at(A,B,s1) | at(A,B,s2) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).  [clausify(7)].
+kept:      107 switch(A,s1) = out1 | switch(A,s2) = out1 | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+kept:      108 switch(A,s1) = out1 | at(A,B,s2) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+kept:      109 at(A,B,s1) | switch(A,s2) = out1 | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+kept:      110 at(A,B,s1) | at(A,B,s2) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).  [clausify(8)].
+kept:      111 open(A,in2) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).  [clausify(9)].
+kept:      112 at(A,B,in2) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).  [clausify(9)].
+kept:      113 open(A,in1) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).  [clausify(10)].
+kept:      114 at(A,B,in1) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).  [clausify(10)].
+           115 in1 != in2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      116 in2 != in1.  [copy(115),flip(a)].
+kept:      117 in2 != s2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      118 in2 != s1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      119 in2 != out2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      120 in2 != out1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      121 in1 != s2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      122 in1 != s1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      123 in1 != out2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      124 in1 != out1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      125 s2 != s1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      126 s2 != out2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+           127 out1 != s2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      128 s2 != out1.  [copy(127),flip(a)].
+kept:      129 out2 != s1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      130 out1 != s1 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      131 out1 != out2 # label(nodesExclusivity) # label(axiom).  [clausify(11)].
+kept:      132 -at(A,B,out2) | -at(succ(A),B,out2) # label(disappearout2) # label(axiom).  [clausify(12)].
+kept:      133 -at(A,B,out1) | -at(succ(A),B,out1) # label(disappearout1) # label(axiom).  [clausify(13)].
+kept:      134 -at(A,B,C) | -at(A,B,D) | D = C # label(positionInOneNodeAtTime) # label(axiom).  [clausify(14)].
+kept:      135 -at(A,B,in2) | C = B | -at(A,C,in2) # label(onlyOneTrainin2) # label(axiom).  [clausify(15)].
+kept:      136 -at(A,B,in1) | C = B | -at(A,C,in1) # label(onlyOneTrainin1) # label(axiom).  [clausify(16)].
+kept:      137 -at(succ(A),B,in2) | appear(A,B,in2) | at(A,B,in2) # label(appearin2) # label(axiom).  [clausify(17)].
+kept:      138 at(succ(A),B,in2) | -appear(A,B,in2) # label(appearin2) # label(axiom).  [clausify(17)].
+kept:      139 at(succ(A),B,in2) | -at(A,B,in2) | open(A,in2) # label(appearin2) # label(axiom).  [clausify(17)].
+kept:      140 -at(succ(A),B,in1) | appear(A,B,in1) | at(A,B,in1) # label(appearin1) # label(axiom).  [clausify(18)].
+kept:      141 at(succ(A),B,in1) | -appear(A,B,in1) # label(appearin1) # label(axiom).  [clausify(18)].
+kept:      142 at(succ(A),B,in1) | -at(A,B,in1) | open(A,in1) # label(appearin1) # label(axiom).  [clausify(18)].
+kept:      143 goal(A) = out2 | goal(A) = out1 # label(trainGoals) # label(axiom).  [clausify(19)].
+kept:      144 succ(A) = A | clockOrder(A) != in2 | clockOrder(succ(A)) = in1 # label(clockOrderin2) # label(axiom).  [clausify(20)].
+kept:      145 succ(A) = A | clockOrder(A) = in2 | clockOrder(succ(A)) != in1 # label(clockOrderin2) # label(axiom).  [clausify(20)].
+kept:      146 succ(A) = A | clockOrder(A) != in1 | clockOrder(succ(A)) = in2 # label(clockOrderin1) # label(axiom).  [clausify(21)].
+kept:      147 succ(A) = A | clockOrder(A) = in1 | clockOrder(succ(A)) != in2 # label(clockOrderin1) # label(axiom).  [clausify(21)].
+kept:      148 clockOrder(A) = in2 | clockOrder(A) = in1 # label(clockPossibilities) # label(axiom).  [clausify(22)].
+kept:      149 -configuration(A,path0) | switch(A,s1) = out2 # label(switchesConfiguration0) # label(axiom).  [clausify(23)].
+kept:      150 configuration(A,path0) | switch(A,s1) != out2 # label(switchesConfiguration0) # label(axiom).  [clausify(23)].
+kept:      151 -configuration(A,path1) | switch(A,s2) = out2 # label(switchesConfiguration1) # label(axiom).  [clausify(24)].
+kept:      152 configuration(A,path1) | switch(A,s2) != out2 # label(switchesConfiguration1) # label(axiom).  [clausify(24)].
+kept:      153 -configuration(A,path2) | switch(A,s1) = out1 # label(switchesConfiguration2) # label(axiom).  [clausify(25)].
+kept:      154 configuration(A,path2) | switch(A,s1) != out1 # label(switchesConfiguration2) # label(axiom).  [clausify(25)].
+kept:      155 -configuration(A,path3) | switch(A,s2) = out1 # label(switchesConfiguration3) # label(axiom).  [clausify(26)].
+kept:      156 configuration(A,path3) | switch(A,s2) != out1 # label(switchesConfiguration3) # label(axiom).  [clausify(26)].
+kept:      157 -free(A,path0) | -at(A,B,s1) # label(freeRoute0) # label(axiom).  [clausify(27)].
+kept:      158 free(A,path0) | at(A,B,s1) # label(freeRoute0) # label(axiom).  [clausify(27)].
+kept:      159 -free(A,path1) | -at(A,B,s2) # label(freeRoute1) # label(axiom).  [clausify(28)].
+kept:      160 free(A,path1) | at(A,B,s2) # label(freeRoute1) # label(axiom).  [clausify(28)].
+kept:      161 -free(A,path2) | -at(A,B,s1) # label(freeRoute2) # label(axiom).  [clausify(29)].
+kept:      162 free(A,path2) | at(A,B,s1) # label(freeRoute2) # label(axiom).  [clausify(29)].
+kept:      163 -free(A,path3) | -at(A,B,s2) # label(freeRoute3) # label(axiom).  [clausify(30)].
+kept:      164 free(A,path3) | at(A,B,s2) # label(freeRoute3) # label(axiom).  [clausify(30)].
+kept:      165 -nonconflicting(A,path0) | free(A,path0) # label(nonconflicting0) # label(axiom).  [clausify(31)].
+kept:      166 -nonconflicting(A,path0) | free(A,path1) # label(nonconflicting0) # label(axiom).  [clausify(31)].
+kept:      167 -nonconflicting(A,path0) | free(A,path2) # label(nonconflicting0) # label(axiom).  [clausify(31)].
+kept:      168 nonconflicting(A,path0) | -free(A,path0) | -free(A,path1) | -free(A,path2) # label(nonconflicting0) # label(axiom).  [clausify(31)].
+kept:      169 -nonconflicting(A,path1) | free(A,path1) # label(nonconflicting1) # label(axiom).  [clausify(32)].
+kept:      170 -nonconflicting(A,path1) | free(A,path0) # label(nonconflicting1) # label(axiom).  [clausify(32)].
+kept:      171 -nonconflicting(A,path1) | free(A,path3) # label(nonconflicting1) # label(axiom).  [clausify(32)].
+kept:      172 nonconflicting(A,path1) | -free(A,path1) | -free(A,path0) | -free(A,path3) # label(nonconflicting1) # label(axiom).  [clausify(32)].
+kept:      173 -nonconflicting(A,path2) | free(A,path2) # label(nonconflicting2) # label(axiom).  [clausify(33)].
+kept:      174 -nonconflicting(A,path2) | free(A,path0) # label(nonconflicting2) # label(axiom).  [clausify(33)].
+kept:      175 -nonconflicting(A,path2) | free(A,path3) # label(nonconflicting2) # label(axiom).  [clausify(33)].
+kept:      176 nonconflicting(A,path2) | -free(A,path2) | -free(A,path0) | -free(A,path3) # label(nonconflicting2) # label(axiom).  [clausify(33)].
+kept:      177 -nonconflicting(A,path3) | free(A,path3) # label(nonconflicting3) # label(axiom).  [clausify(34)].
+kept:      178 -nonconflicting(A,path3) | free(A,path1) # label(nonconflicting3) # label(axiom).  [clausify(34)].
+kept:      179 -nonconflicting(A,path3) | free(A,path2) # label(nonconflicting3) # label(axiom).  [clausify(34)].
+kept:      180 nonconflicting(A,path3) | -free(A,path3) | -free(A,path1) | -free(A,path2) # label(nonconflicting3) # label(axiom).  [clausify(34)].
+kept:      181 path1 != path0 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+kept:      182 path2 != path0 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+kept:      183 path3 != path0 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+kept:      184 path2 != path1 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+kept:      185 path3 != path1 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+kept:      186 path3 != path2 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+kept:      187 -available(A,path0) | nonconflicting(A,path0) # label(availableRoute0) # label(axiom).  [clausify(36)].
+kept:      188 -available(A,path0) | configuration(A,path0) # label(availableRoute0) # label(axiom).  [clausify(36)].
+kept:      189 available(A,path0) | -nonconflicting(A,path0) | -configuration(A,path0) # label(availableRoute0) # label(axiom).  [clausify(36)].
+kept:      190 -available(A,path1) | nonconflicting(A,path1) # label(availableRoute1) # label(axiom).  [clausify(37)].
+kept:      191 -available(A,path1) | configuration(A,path1) # label(availableRoute1) # label(axiom).  [clausify(37)].
+kept:      192 available(A,path1) | -nonconflicting(A,path1) | -configuration(A,path1) # label(availableRoute1) # label(axiom).  [clausify(37)].
+kept:      193 -available(A,path2) | nonconflicting(A,path2) # label(availableRoute2) # label(axiom).  [clausify(38)].
+kept:      194 -available(A,path2) | configuration(A,path2) # label(availableRoute2) # label(axiom).  [clausify(38)].
+kept:      195 available(A,path2) | -nonconflicting(A,path2) | -configuration(A,path2) # label(availableRoute2) # label(axiom).  [clausify(38)].
+kept:      196 -available(A,path3) | nonconflicting(A,path3) # label(availableRoute3) # label(axiom).  [clausify(39)].
+kept:      197 -available(A,path3) | configuration(A,path3) # label(availableRoute3) # label(axiom).  [clausify(39)].
+kept:      198 available(A,path3) | -nonconflicting(A,path3) | -configuration(A,path3) # label(availableRoute3) # label(axiom).  [clausify(39)].
+kept:      199 -wantsToGo(A,in2,out2) | at(A,f2(A),in2) # label(wantsToGoin2out2) # label(axiom).  [clausify(40)].
+kept:      200 -wantsToGo(A,in2,out2) | goal(f2(A)) = out2 # label(wantsToGoin2out2) # label(axiom).  [clausify(40)].
+kept:      201 wantsToGo(A,in2,out2) | -at(A,f2(A),in2) | goal(f2(A)) != out2 # label(wantsToGoin2out2) # label(axiom).  [clausify(40)].
+kept:      202 -wantsToGo(A,in2,out1) | at(A,f3(A),in2) # label(wantsToGoin2out1) # label(axiom).  [clausify(41)].
+kept:      203 -wantsToGo(A,in2,out1) | goal(f3(A)) = out1 # label(wantsToGoin2out1) # label(axiom).  [clausify(41)].
+kept:      204 wantsToGo(A,in2,out1) | -at(A,f3(A),in2) | goal(f3(A)) != out1 # label(wantsToGoin2out1) # label(axiom).  [clausify(41)].
+kept:      205 -wantsToGo(A,in1,out2) | at(A,f4(A),in1) # label(wantsToGoin1out2) # label(axiom).  [clausify(42)].
+kept:      206 -wantsToGo(A,in1,out2) | goal(f4(A)) = out2 # label(wantsToGoin1out2) # label(axiom).  [clausify(42)].
+kept:      207 wantsToGo(A,in1,out2) | -at(A,f4(A),in1) | goal(f4(A)) != out2 # label(wantsToGoin1out2) # label(axiom).  [clausify(42)].
+kept:      208 -wantsToGo(A,in1,out1) | at(A,f5(A),in1) # label(wantsToGoin1out1) # label(axiom).  [clausify(43)].
+kept:      209 -wantsToGo(A,in1,out1) | goal(f5(A)) = out1 # label(wantsToGoin1out1) # label(axiom).  [clausify(43)].
+kept:      210 wantsToGo(A,in1,out1) | -at(A,f5(A),in1) | goal(f5(A)) != out1 # label(wantsToGoin1out1) # label(axiom).  [clausify(43)].
+kept:      211 -toBeUsed(A,path0) | available(A,path0) # label(pathToBeUsed0) # label(axiom).  [clausify(44)].
+kept:      212 -toBeUsed(A,path0) | clockOrder(A) = in1 # label(pathToBeUsed0) # label(axiom).  [clausify(44)].
+kept:      213 -toBeUsed(A,path0) | wantsToGo(A,in1,out2) # label(pathToBeUsed0) # label(axiom).  [clausify(44)].
+kept:      214 toBeUsed(A,path0) | -available(A,path0) | clockOrder(A) != in1 | -wantsToGo(A,in1,out2) # label(pathToBeUsed0) # label(axiom).  [clausify(44)].
+kept:      215 -toBeUsed(A,path1) | available(A,path1) # label(pathToBeUsed1) # label(axiom).  [clausify(45)].
+kept:      216 -toBeUsed(A,path1) | clockOrder(A) = in2 # label(pathToBeUsed1) # label(axiom).  [clausify(45)].
+kept:      217 -toBeUsed(A,path1) | wantsToGo(A,in2,out2) # label(pathToBeUsed1) # label(axiom).  [clausify(45)].
+kept:      218 toBeUsed(A,path1) | -available(A,path1) | clockOrder(A) != in2 | -wantsToGo(A,in2,out2) # label(pathToBeUsed1) # label(axiom).  [clausify(45)].
+kept:      219 -toBeUsed(A,path2) | available(A,path2) # label(pathToBeUsed2) # label(axiom).  [clausify(46)].
+kept:      220 -toBeUsed(A,path2) | clockOrder(A) = in1 # label(pathToBeUsed2) # label(axiom).  [clausify(46)].
+kept:      221 -toBeUsed(A,path2) | wantsToGo(A,in1,out1) # label(pathToBeUsed2) # label(axiom).  [clausify(46)].
+kept:      222 toBeUsed(A,path2) | -available(A,path2) | clockOrder(A) != in1 | -wantsToGo(A,in1,out1) # label(pathToBeUsed2) # label(axiom).  [clausify(46)].
+kept:      223 -toBeUsed(A,path3) | available(A,path3) # label(pathToBeUsed3) # label(axiom).  [clausify(47)].
+kept:      224 -toBeUsed(A,path3) | clockOrder(A) = in2 # label(pathToBeUsed3) # label(axiom).  [clausify(47)].
+kept:      225 -toBeUsed(A,path3) | wantsToGo(A,in2,out1) # label(pathToBeUsed3) # label(axiom).  [clausify(47)].
+kept:      226 toBeUsed(A,path3) | -available(A,path3) | clockOrder(A) != in2 | -wantsToGo(A,in2,out1) # label(pathToBeUsed3) # label(axiom).  [clausify(47)].
+kept:      227 -configuration(succ(A),B) | configuration(A,B) | toBeUsed(A,B) # label(setPath) # label(axiom).  [clausify(48)].
+kept:      228 -configuration(succ(A),B) | -free(A,B) | toBeUsed(A,B) # label(setPath) # label(axiom).  [clausify(48)].
+kept:      229 configuration(succ(A),B) | -configuration(A,B) | free(A,B) # label(setPath) # label(axiom).  [clausify(48)].
+kept:      230 configuration(succ(A),B) | -toBeUsed(A,B) # label(setPath) # label(axiom).  [clausify(48)].
+kept:      231 -open(succ(A),in2) | toBeUsed(A,path1) | toBeUsed(A,path3) # label(openGatein2) # label(axiom).  [clausify(49)].
+kept:      232 open(succ(A),in2) | -toBeUsed(A,path1) # label(openGatein2) # label(axiom).  [clausify(49)].
+kept:      233 open(succ(A),in2) | -toBeUsed(A,path3) # label(openGatein2) # label(axiom).  [clausify(49)].
+kept:      234 -open(succ(A),in1) | toBeUsed(A,path0) | toBeUsed(A,path2) # label(openGatein1) # label(axiom).  [clausify(50)].
+kept:      235 open(succ(A),in1) | -toBeUsed(A,path0) # label(openGatein1) # label(axiom).  [clausify(50)].
+kept:      236 open(succ(A),in1) | -toBeUsed(A,path2) # label(openGatein1) # label(axiom).  [clausify(50)].
+kept:      237 at(A,c1,in2) # label(willOpenin2) # label(conjecture).  [deny(51)].
+kept:      238 less(A,B) # label(willOpenin2) # label(conjecture).  [deny(51)].
+kept:      239 -open(A,in2) # label(willOpenin2) # label(conjecture).  [deny(51)].
+kept:      240 -at(succ(A),B,in1) | appear(A,B,in1) | -open(A,in1) | -at(succ(A),B,out2).  [resolve(70,c,65,a)].
+kept:      241 -at(succ(A),B,in1) | appear(A,B,in1) | -open(A,in1) | -at(succ(A),B,out1).  [resolve(70,c,66,a)].
+kept:      242 -at(succ(A),B,in1) | appear(A,B,in1) | -open(A,in1) | -at(succ(A),B,s2).  [resolve(70,c,67,a)].
+kept:      243 -at(succ(A),B,in1) | appear(A,B,in1) | -open(A,in1) | -at(succ(A),B,s1).  [resolve(70,c,68,a)].
+kept:      244 -at(succ(A),B,in1) | appear(A,B,in1) | -open(A,in1) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(70,c,69,c)].
+kept:      245 -at(succ(A),B,out2) | -at(succ(f1(C,B)),B,in1) | appear(f1(C,B),B,in1) | -open(f1(C,B),in1).  [resolve(72,b,70,c)].
+kept:      246 -at(succ(A),B,out2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,out1).  [resolve(73,b,66,a)].
+kept:      247 -at(succ(A),B,out2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(73,b,67,a)].
+kept:      248 -at(succ(A),B,out2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(73,b,68,a)].
+kept:      249 -at(succ(A),B,out2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(73,b,69,c)].
+kept:      250 -at(succ(A),B,out2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(73,b,71,c)].
+kept:      251 -at(succ(A),B,out2) | switch(f1(C,B),s1) != out2 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,out2).  [resolve(73,b,72,b)].
+kept:      252 -at(succ(A),B,out2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,out1).  [resolve(74,b,66,a)].
+kept:      253 -at(succ(A),B,out2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(74,b,67,a)].
+kept:      254 -at(succ(A),B,out2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(74,b,68,a)].
+kept:      255 -at(succ(A),B,out2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(74,b,69,c)].
+kept:      256 -at(succ(A),B,out2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(74,b,71,c)].
+kept:      257 -at(succ(A),B,out2) | switch(f1(C,B),s2) != out2 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,out2).  [resolve(74,b,72,b)].
+kept:      258 switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,out2).  [resolve(75,a,65,a)].
+kept:      259 switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,s2).  [resolve(75,a,67,a)].
+kept:      260 switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,s1).  [resolve(75,a,68,a)].
+kept:      261 switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(75,a,69,c)].
+kept:      262 switch(A,s1) != out1 | -at(A,B,s1) | at(succ(A),B,out1) | -at(succ(C),B,out2) | at(succ(A),B,in1) | -at(A,B,in1).  [resolve(75,a,71,c)].
+kept:      263 switch(f1(A,B),s1) != out1 | -at(f1(A,B),B,s1) | at(succ(f1(A,B)),B,out1) | -at(succ(C),B,out2) | -at(succ(D),B,out2).  [resolve(75,a,72,b)].
+kept:      264 switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,out2).  [resolve(76,a,65,a)].
+kept:      265 switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,s2).  [resolve(76,a,67,a)].
+kept:      266 switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2) | -at(succ(A),B,s1).  [resolve(76,a,68,a)].
+kept:      267 switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(76,a,69,c)].
+kept:      268 switch(A,s2) != out1 | -at(A,B,s2) | at(succ(A),B,out1) | -at(succ(C),B,out2) | at(succ(A),B,in1) | -at(A,B,in1).  [resolve(76,a,71,c)].
+kept:      269 switch(f1(A,B),s2) != out1 | -at(f1(A,B),B,s2) | at(succ(f1(A,B)),B,out1) | -at(succ(C),B,out2) | -at(succ(D),B,out2).  [resolve(76,a,72,b)].
+kept:      270 -at(succ(A),B,out1) | -at(succ(f1(C,B)),B,in1) | appear(f1(C,B),B,in1) | -open(f1(C,B),in1).  [resolve(77,b,70,c)].
+kept:      271 -at(succ(A),B,out1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,out1).  [resolve(78,b,66,a)].
+kept:      272 -at(succ(A),B,out1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(78,b,67,a)].
+kept:      273 -at(succ(A),B,out1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(78,b,68,a)].
+kept:      274 -at(succ(A),B,out1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(78,b,69,c)].
+kept:      275 -at(succ(A),B,out1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(78,b,71,c)].
+kept:      276 -at(succ(A),B,out1) | switch(f1(C,B),s1) != out2 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,out1).  [resolve(78,b,77,b)].
+kept:      277 -at(succ(A),B,out1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,out1).  [resolve(79,b,66,a)].
+kept:      278 -at(succ(A),B,out1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(79,b,67,a)].
+kept:      279 -at(succ(A),B,out1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(79,b,68,a)].
+kept:      280 -at(succ(A),B,out1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(79,b,69,c)].
+kept:      281 -at(succ(A),B,out1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(79,b,71,c)].
+kept:      282 -at(succ(A),B,out1) | switch(f1(C,B),s2) != out2 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,out1).  [resolve(79,b,77,b)].
+kept:      283 -at(succ(A),B,out1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | -at(succ(C),B,s2).  [resolve(80,b,67,a)].
+kept:      284 -at(succ(A),B,out1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(80,b,68,a)].
+kept:      285 -at(succ(A),B,out1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(80,b,69,c)].
+kept:      286 -at(succ(A),B,out1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(80,b,71,c)].
+kept:      287 -at(succ(A),B,out1) | switch(f1(C,B),s1) != out1 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,out1).  [resolve(80,b,77,b)].
+kept:      288 -at(succ(A),B,out1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | -at(succ(C),B,s2).  [resolve(81,b,67,a)].
+kept:      289 -at(succ(A),B,out1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(81,b,68,a)].
+kept:      290 -at(succ(A),B,out1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(81,b,69,c)].
+kept:      291 -at(succ(A),B,out1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(81,b,71,c)].
+kept:      292 -at(succ(A),B,out1) | switch(f1(C,B),s2) != out1 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,out1).  [resolve(81,b,77,b)].
+kept:      293 -at(succ(A),B,s2) | -at(succ(f1(C,B)),B,in1) | appear(f1(C,B),B,in1) | -open(f1(C,B),in1).  [resolve(82,b,70,c)].
+kept:      294 -at(succ(A),B,s2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(83,b,67,a)].
+kept:      295 -at(succ(A),B,s2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(83,b,68,a)].
+kept:      296 -at(succ(A),B,s2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(83,b,69,c)].
+kept:      297 -at(succ(A),B,s2) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(83,b,71,c)].
+kept:      298 -at(succ(A),B,s2) | switch(f1(C,B),s1) != out2 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,s2).  [resolve(83,b,82,b)].
+kept:      299 -at(succ(A),B,s2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s2).  [resolve(84,b,67,a)].
+kept:      300 -at(succ(A),B,s2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(84,b,68,a)].
+kept:      301 -at(succ(A),B,s2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(84,b,69,c)].
+kept:      302 -at(succ(A),B,s2) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(84,b,71,c)].
+kept:      303 -at(succ(A),B,s2) | switch(f1(C,B),s2) != out2 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,s2).  [resolve(84,b,82,b)].
+kept:      304 -at(succ(A),B,s2) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | -at(succ(C),B,s2).  [resolve(85,b,67,a)].
+kept:      305 -at(succ(A),B,s2) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(85,b,68,a)].
+kept:      306 -at(succ(A),B,s2) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(85,b,69,c)].
+kept:      307 -at(succ(A),B,s2) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(85,b,71,c)].
+kept:      308 -at(succ(A),B,s2) | switch(f1(C,B),s1) != out1 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,s2).  [resolve(85,b,82,b)].
+kept:      309 -at(succ(A),B,s2) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | -at(succ(C),B,s2).  [resolve(86,b,67,a)].
+kept:      310 -at(succ(A),B,s2) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(86,b,68,a)].
+kept:      311 -at(succ(A),B,s2) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(86,b,69,c)].
+kept:      312 -at(succ(A),B,s2) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(86,b,71,c)].
+kept:      313 -at(succ(A),B,s2) | switch(f1(C,B),s2) != out1 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,s2).  [resolve(86,b,82,b)].
+kept:      314 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2) | -at(succ(A),B,out2).  [resolve(87,a,65,a)].
+kept:      315 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2) | -at(succ(A),B,out1).  [resolve(87,a,66,a)].
+kept:      316 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2) | -at(succ(A),B,s2).  [resolve(87,a,67,a)].
+kept:      317 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(87,a,69,c)].
+           318 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2) | at(succ(A),B,in1) | -at(A,B,in1).  [resolve(87,a,71,c)].
+kept:      319 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out2) | at(succ(A),B,in1).  [copy(318),merge(f)].
+kept:      320 -open(f1(A,B),in1) | -at(f1(A,B),B,in1) | at(succ(f1(A,B)),B,s1) | -at(succ(C),B,out2) | -at(succ(D),B,out2).  [resolve(87,a,72,b)].
+kept:      321 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out1) | -at(succ(A),B,out1).  [resolve(88,a,66,a)].
+kept:      322 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out1) | -at(succ(A),B,s2).  [resolve(88,a,67,a)].
+kept:      323 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out1) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(88,a,69,c)].
+           324 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out1) | at(succ(A),B,in1) | -at(A,B,in1).  [resolve(88,a,71,c)].
+kept:      325 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,out1) | at(succ(A),B,in1).  [copy(324),merge(f)].
+kept:      326 -open(f1(A,B),in1) | -at(f1(A,B),B,in1) | at(succ(f1(A,B)),B,s1) | -at(succ(C),B,out1) | -at(succ(D),B,out1).  [resolve(88,a,77,b)].
+kept:      327 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,s2) | -at(succ(A),B,s2).  [resolve(89,a,67,a)].
+kept:      328 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,s2) | at(succ(A),B,in2) | -at(A,B,in2).  [resolve(89,a,69,c)].
+           329 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,s2) | at(succ(A),B,in1) | -at(A,B,in1).  [resolve(89,a,71,c)].
+kept:      330 -open(A,in1) | -at(A,B,in1) | at(succ(A),B,s1) | -at(succ(C),B,s2) | at(succ(A),B,in1).  [copy(329),merge(f)].
+kept:      331 -open(f1(A,B),in1) | -at(f1(A,B),B,in1) | at(succ(f1(A,B)),B,s1) | -at(succ(C),B,s2) | -at(succ(D),B,s2).  [resolve(89,a,82,b)].
+kept:      332 -at(succ(A),B,s1) | -at(succ(f1(C,B)),B,in1) | appear(f1(C,B),B,in1) | -open(f1(C,B),in1).  [resolve(90,b,70,c)].
+kept:      333 -at(succ(A),B,s1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(91,b,68,a)].
+kept:      334 -at(succ(A),B,s1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(91,b,69,c)].
+kept:      335 -at(succ(A),B,s1) | switch(C,s1) != out2 | -at(C,B,s1) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(91,b,71,c)].
+kept:      336 -at(succ(A),B,s1) | switch(f1(C,B),s1) != out2 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,s1).  [resolve(91,b,90,b)].
+kept:      337 -at(succ(A),B,s1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | -at(succ(C),B,s1).  [resolve(92,b,68,a)].
+kept:      338 -at(succ(A),B,s1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(92,b,69,c)].
+kept:      339 -at(succ(A),B,s1) | switch(C,s2) != out2 | -at(C,B,s2) | at(succ(C),B,out2) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(92,b,71,c)].
+kept:      340 -at(succ(A),B,s1) | switch(f1(C,B),s2) != out2 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out2) | -at(succ(D),B,s1).  [resolve(92,b,90,b)].
+kept:      341 -at(succ(A),B,s1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(93,b,68,a)].
+kept:      342 -at(succ(A),B,s1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(93,b,69,c)].
+kept:      343 -at(succ(A),B,s1) | switch(C,s1) != out1 | -at(C,B,s1) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(93,b,71,c)].
+kept:      344 -at(succ(A),B,s1) | switch(f1(C,B),s1) != out1 | -at(f1(C,B),B,s1) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,s1).  [resolve(93,b,90,b)].
+kept:      345 -at(succ(A),B,s1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | -at(succ(C),B,s1).  [resolve(94,b,68,a)].
+kept:      346 -at(succ(A),B,s1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(94,b,69,c)].
+kept:      347 -at(succ(A),B,s1) | switch(C,s2) != out1 | -at(C,B,s2) | at(succ(C),B,out1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(94,b,71,c)].
+kept:      348 -at(succ(A),B,s1) | switch(f1(C,B),s2) != out1 | -at(f1(C,B),B,s2) | at(succ(f1(C,B)),B,out1) | -at(succ(D),B,s1).  [resolve(94,b,90,b)].
+kept:      349 -at(succ(A),B,s1) | -open(C,in1) | -at(C,B,in1) | at(succ(C),B,s1) | at(succ(C),B,in2) | -at(C,B,in2).  [resolve(95,b,69,c)].
+           350 -at(succ(A),B,s1) | -open(C,in1) | -at(C,B,in1) | at(succ(C),B,s1) | at(succ(C),B,in1) | -at(C,B,in1).  [resolve(95,b,71,c)].
+kept:      351 -at(succ(A),B,s1) | -open(C,in1) | -at(C,B,in1) | at(succ(C),B,s1) | at(succ(C),B,in1).  [copy(350),merge(f)].
+kept:      352 -at(succ(A),B,s1) | -open(f1(C,B),in1) | -at(f1(C,B),B,in1) | at(succ(f1(C,B)),B,s1) | -at(succ(D),B,s1).  [resolve(95,b,90,b)].
+kept:      353 A = B.  [back_unit_del(96),unit_del(a,238),unit_del(b,238)].
+
+============================== PROOF =================================
+
+% Proof 1 at 0.03 (+ 0.01) seconds.
+% Length of proof is 8.
+% Level of proof is 3.
+% Maximum clause weight is 9.000.
+% Given clauses 0.
+
+1 (all X all Y (less(X,Y) & less(Y,X) -> X = Y)) # label(antisymmetry) # label(axiom) # label(non_clause).  [assumption].
+35 path0 != path1 & path0 != path2 & path0 != path3 & path1 != path2 & path1 != path3 & path2 != path3 # label(routesExclusivity) # label(axiom) # label(non_clause).  [assumption].
+51 (exists X exists Y (at(X,T,in2) & less(X,Y) -> open(X,in2))) # label(willOpenin2) # label(conjecture) # label(non_clause) # label(goal).  [goal].
+96 -less(A,B) | -less(B,A) | B = A # label(antisymmetry) # label(axiom).  [clausify(1)].
+186 path3 != path2 # label(routesExclusivity) # label(axiom).  [clausify(35)].
+238 less(A,B) # label(willOpenin2) # label(conjecture).  [deny(51)].
+353 A = B.  [back_unit_del(96),unit_del(a,238),unit_del(b,238)].
+354 $F.  [resolve(353,a,186,a)].
+
+============================== end of proof ==========================
+
+============================== STATISTICS ============================
+
+Given=0. Generated=262. Kept=252. proofs=1.
+Usable=0. Sos=135. Demods=2. Limbo=111, Disabled=304. Hints=0.
+Kept_by_rule=0, Deleted_by_rule=0.
+Forward_subsumed=10. Back_subsumed=4.
+Sos_limit_deleted=0. Sos_displaced=0. Sos_removed=0.
+New_demodulators=2 (0 lex), Back_demodulated=0. Back_unit_deleted=1.
+Demod_attempts=4980. Demod_rewrites=0.
+Res_instance_prunes=0. Para_instance_prunes=0. Basic_paramod_prunes=0.
+Nonunit_fsub_feature_tests=78. Nonunit_bsub_feature_tests=464.
+Megabytes=1.04.
+User_CPU=0.03, System_CPU=0.01, Wall_clock=0.
+
+============================== end of statistics =====================
+
+============================== end of search =========================
+
+THEOREM PROVED
+
+Exiting with 1 proof.
+
+Process 23867 exit (max_proofs) Fri Jun  6 15:59:00 2014

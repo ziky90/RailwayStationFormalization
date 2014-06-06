@@ -1,0 +1,500 @@
+============================== Mace4 =================================
+Mace4 (64) version 2009-11A, November 2009.
+Process 17039 was started by zikesjan on Jan-MacBook-Pro-5.local,
+Sun Jun  1 15:57:06 2014
+The command was "/Users/zikesjan/Downloads/LADR-2009-11A/bin/mace4".
+============================== end of head ===========================
+
+============================== INPUT =================================
+set(prolog_style_variables).
+
+formulas(assumptions).
+(all X all Y (less(X,Y) & less(Y,X) -> X = Y)) # label(antisymmetry) # label(axiom).
+(all X all Y all Z (less(X,Y) & less(Y,Z) -> less(X,Z))) # label(transitivity) # label(axiom).
+(all X all Y (less(X,Y) | less(Y,X))) # label(totality) # label(axiom).
+(all X (less(X,succ(X)) & (all Y (less(Y,X) | less(succ(X),Y))))) # label(succ) # label(axiom).
+(all X (pred(succ(X)) = X & succ(pred(X)) = X)) # label(pred) # label(axiom).
+(all X all T go(X,T)) # label(goIfItsPossible) # label(axiom).
+(all X exists Y appear(X,Y,in2)) # label(alwaysAppearsin2) # label(axiom).
+(all X exists Y appear(X,Y,in1)) # label(alwaysAppearsin1) # label(axiom).
+(all X all T (train(T) -> (exists X2 (less(X,X2) & go(X2,T))))) # label(go) # label(axiom).
+(all X all T (train(T) & go(X,T) & (switch(X,s3) = out2 & at(X,T,s3) | switch(X,s4) = out2 & at(X,T,s4)) <-> at(succ(X),T,out2))) # label(out2ax1) # label(axiom).
+(all X all T (train(T) & go(X,T) & (switch(X,s3) = out1 & at(X,T,s3) | switch(X,s4) = out1 & at(X,T,s4)) <-> at(succ(X),T,out1))) # label(out1ax1) # label(axiom).
+(all X all T (train(T) & go(X,T) & (switch(X,s1) = s3 & at(X,T,s1) | switch(X,s2) = s3 & at(X,T,s2)) <-> at(succ(X),T,s3))) # label(s3ax1) # label(axiom).
+(all X all T (train(T) & go(X,T) & (switch(X,s1) = s4 & at(X,T,s1) | switch(X,s2) = s4 & at(X,T,s2)) <-> at(succ(X),T,s4))) # label(s4ax1) # label(axiom).
+(all X all T (train(T) & go(X,T) & open(X,in2) & at(X,T,in2) <-> at(succ(X),T,s2))) # label(s2ax1) # label(axiom).
+(all X all T (train(T) & go(X,T) & open(X,in1) & at(X,T,in1) <-> at(succ(X),T,s1))) # label(s1ax1) # label(axiom).
+in2 != in1 & in2 != s2 & in2 != s1 & in2 != out2 & in2 != out1 & in2 != s3 & in2 != s4 & in1 != s2 & in1 != s1 & in1 != out2 & in1 != out1 & in1 != s3 & in1 != s4 & s2 != s1 & s2 != out2 & s2 != out1 & s2 != s3 & s2 != s4 & s1 != out2 & s1 != out1 & s1 != s3 & s1 != s4 & out2 != out1 & out2 != s3 & out2 != s4 & out1 != s3 & out1 != s4 & s3 != s4 # label(nodesExclusivity) # label(axiom).
+(all X all T (at(X,T,out2) -> -at(succ(X),T,out2))) # label(disappearout2) # label(axiom).
+(all X all T (at(X,T,out1) -> -at(succ(X),T,out1))) # label(disappearout1) # label(axiom).
+(all X all T all N1 all N2 (at(X,T,N1) & at(X,T,N2) -> N1 = N2)) # label(positionInOneNodeAtTime) # label(axiom).
+(all X all T1 all T2 (at(X,T1,in2) & T1 != T2 -> -at(X,T2,in2))) # label(onlyOneTrainin2) # label(axiom).
+(all X all T1 all T2 (at(X,T1,in1) & T1 != T2 -> -at(X,T2,in1))) # label(onlyOneTrainin1) # label(axiom).
+(all X all T (at(succ(X),T,in2) <-> appear(X,T,in2) | at(X,T,in2) & (-go(X,T) | -open(X,in2)))) # label(appearin2) # label(axiom).
+(all X all T (at(succ(X),T,in1) <-> appear(X,T,in1) | at(X,T,in1) & (-go(X,T) | -open(X,in1)))) # label(appearin1) # label(axiom).
+(all T (goal(T) = out2 | goal(T) = out1)) # label(trainGoals) # label(axiom).
+end_of_list.
+
+formulas(goals).
+end_of_list.
+
+============================== end of input ==========================
+
+============================== PROCESS NON-CLAUSAL FORMULAS ==========
+
+% Formulas that are not ordinary clauses:
+1 (all X all Y (less(X,Y) & less(Y,X) -> X = Y)) # label(antisymmetry) # label(axiom) # label(non_clause).  [assumption].
+2 (all X all Y all Z (less(X,Y) & less(Y,Z) -> less(X,Z))) # label(transitivity) # label(axiom) # label(non_clause).  [assumption].
+3 (all X all Y (less(X,Y) | less(Y,X))) # label(totality) # label(axiom) # label(non_clause).  [assumption].
+4 (all X (less(X,succ(X)) & (all Y (less(Y,X) | less(succ(X),Y))))) # label(succ) # label(axiom) # label(non_clause).  [assumption].
+5 (all X (pred(succ(X)) = X & succ(pred(X)) = X)) # label(pred) # label(axiom) # label(non_clause).  [assumption].
+6 (all X all T go(X,T)) # label(goIfItsPossible) # label(axiom) # label(non_clause).  [assumption].
+7 (all X exists Y appear(X,Y,in2)) # label(alwaysAppearsin2) # label(axiom) # label(non_clause).  [assumption].
+8 (all X exists Y appear(X,Y,in1)) # label(alwaysAppearsin1) # label(axiom) # label(non_clause).  [assumption].
+9 (all X all T (train(T) -> (exists X2 (less(X,X2) & go(X2,T))))) # label(go) # label(axiom) # label(non_clause).  [assumption].
+10 (all X all T (train(T) & go(X,T) & (switch(X,s3) = out2 & at(X,T,s3) | switch(X,s4) = out2 & at(X,T,s4)) <-> at(succ(X),T,out2))) # label(out2ax1) # label(axiom) # label(non_clause).  [assumption].
+11 (all X all T (train(T) & go(X,T) & (switch(X,s3) = out1 & at(X,T,s3) | switch(X,s4) = out1 & at(X,T,s4)) <-> at(succ(X),T,out1))) # label(out1ax1) # label(axiom) # label(non_clause).  [assumption].
+12 (all X all T (train(T) & go(X,T) & (switch(X,s1) = s3 & at(X,T,s1) | switch(X,s2) = s3 & at(X,T,s2)) <-> at(succ(X),T,s3))) # label(s3ax1) # label(axiom) # label(non_clause).  [assumption].
+13 (all X all T (train(T) & go(X,T) & (switch(X,s1) = s4 & at(X,T,s1) | switch(X,s2) = s4 & at(X,T,s2)) <-> at(succ(X),T,s4))) # label(s4ax1) # label(axiom) # label(non_clause).  [assumption].
+14 (all X all T (train(T) & go(X,T) & open(X,in2) & at(X,T,in2) <-> at(succ(X),T,s2))) # label(s2ax1) # label(axiom) # label(non_clause).  [assumption].
+15 (all X all T (train(T) & go(X,T) & open(X,in1) & at(X,T,in1) <-> at(succ(X),T,s1))) # label(s1ax1) # label(axiom) # label(non_clause).  [assumption].
+16 in2 != in1 & in2 != s2 & in2 != s1 & in2 != out2 & in2 != out1 & in2 != s3 & in2 != s4 & in1 != s2 & in1 != s1 & in1 != out2 & in1 != out1 & in1 != s3 & in1 != s4 & s2 != s1 & s2 != out2 & s2 != out1 & s2 != s3 & s2 != s4 & s1 != out2 & s1 != out1 & s1 != s3 & s1 != s4 & out2 != out1 & out2 != s3 & out2 != s4 & out1 != s3 & out1 != s4 & s3 != s4 # label(nodesExclusivity) # label(axiom) # label(non_clause).  [assumption].
+17 (all X all T (at(X,T,out2) -> -at(succ(X),T,out2))) # label(disappearout2) # label(axiom) # label(non_clause).  [assumption].
+18 (all X all T (at(X,T,out1) -> -at(succ(X),T,out1))) # label(disappearout1) # label(axiom) # label(non_clause).  [assumption].
+19 (all X all T all N1 all N2 (at(X,T,N1) & at(X,T,N2) -> N1 = N2)) # label(positionInOneNodeAtTime) # label(axiom) # label(non_clause).  [assumption].
+20 (all X all T1 all T2 (at(X,T1,in2) & T1 != T2 -> -at(X,T2,in2))) # label(onlyOneTrainin2) # label(axiom) # label(non_clause).  [assumption].
+21 (all X all T1 all T2 (at(X,T1,in1) & T1 != T2 -> -at(X,T2,in1))) # label(onlyOneTrainin1) # label(axiom) # label(non_clause).  [assumption].
+22 (all X all T (at(succ(X),T,in2) <-> appear(X,T,in2) | at(X,T,in2) & (-go(X,T) | -open(X,in2)))) # label(appearin2) # label(axiom) # label(non_clause).  [assumption].
+23 (all X all T (at(succ(X),T,in1) <-> appear(X,T,in1) | at(X,T,in1) & (-go(X,T) | -open(X,in1)))) # label(appearin1) # label(axiom) # label(non_clause).  [assumption].
+24 (all T (goal(T) = out2 | goal(T) = out1)) # label(trainGoals) # label(axiom) # label(non_clause).  [assumption].
+
+============================== end of process non-clausal formulas ===
+
+============================== CLAUSES FOR SEARCH ====================
+
+formulas(mace4_clauses).
+-less(A,B) | -less(B,A) | B = A # label(antisymmetry) # label(axiom).
+-less(A,B) | -less(B,C) | less(A,C) # label(transitivity) # label(axiom).
+less(A,B) | less(B,A) # label(totality) # label(axiom).
+less(A,succ(A)) # label(succ) # label(axiom).
+less(A,B) | less(succ(B),A) # label(succ) # label(axiom).
+pred(succ(A)) = A # label(pred) # label(axiom).
+succ(pred(A)) = A # label(pred) # label(axiom).
+go(A,B) # label(goIfItsPossible) # label(axiom).
+appear(A,f1(A),in2) # label(alwaysAppearsin2) # label(axiom).
+appear(A,f2(A),in1) # label(alwaysAppearsin1) # label(axiom).
+-train(A) | less(B,f3(B,A)) # label(go) # label(axiom).
+-train(A) | go(f3(B,A),A) # label(go) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s3) != out2 | -at(B,A,s3) | at(succ(B),A,out2) # label(out2ax1) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s4) != out2 | -at(B,A,s4) | at(succ(B),A,out2) # label(out2ax1) # label(axiom).
+train(A) | -at(succ(B),A,out2) # label(out2ax1) # label(axiom).
+go(A,B) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).
+switch(A,s3) = out2 | switch(A,s4) = out2 | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).
+switch(A,s3) = out2 | at(A,B,s4) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).
+at(A,B,s3) | switch(A,s4) = out2 | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).
+at(A,B,s3) | at(A,B,s4) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s3) != out1 | -at(B,A,s3) | at(succ(B),A,out1) # label(out1ax1) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s4) != out1 | -at(B,A,s4) | at(succ(B),A,out1) # label(out1ax1) # label(axiom).
+train(A) | -at(succ(B),A,out1) # label(out1ax1) # label(axiom).
+go(A,B) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).
+switch(A,s3) = out1 | switch(A,s4) = out1 | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).
+switch(A,s3) = out1 | at(A,B,s4) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).
+at(A,B,s3) | switch(A,s4) = out1 | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).
+at(A,B,s3) | at(A,B,s4) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s1) != s3 | -at(B,A,s1) | at(succ(B),A,s3) # label(s3ax1) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s2) != s3 | -at(B,A,s2) | at(succ(B),A,s3) # label(s3ax1) # label(axiom).
+train(A) | -at(succ(B),A,s3) # label(s3ax1) # label(axiom).
+go(A,B) | -at(succ(A),B,s3) # label(s3ax1) # label(axiom).
+switch(A,s1) = s3 | switch(A,s2) = s3 | -at(succ(A),B,s3) # label(s3ax1) # label(axiom).
+switch(A,s1) = s3 | at(A,B,s2) | -at(succ(A),B,s3) # label(s3ax1) # label(axiom).
+at(A,B,s1) | switch(A,s2) = s3 | -at(succ(A),B,s3) # label(s3ax1) # label(axiom).
+at(A,B,s1) | at(A,B,s2) | -at(succ(A),B,s3) # label(s3ax1) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s1) != s4 | -at(B,A,s1) | at(succ(B),A,s4) # label(s4ax1) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s2) != s4 | -at(B,A,s2) | at(succ(B),A,s4) # label(s4ax1) # label(axiom).
+train(A) | -at(succ(B),A,s4) # label(s4ax1) # label(axiom).
+go(A,B) | -at(succ(A),B,s4) # label(s4ax1) # label(axiom).
+switch(A,s1) = s4 | switch(A,s2) = s4 | -at(succ(A),B,s4) # label(s4ax1) # label(axiom).
+switch(A,s1) = s4 | at(A,B,s2) | -at(succ(A),B,s4) # label(s4ax1) # label(axiom).
+at(A,B,s1) | switch(A,s2) = s4 | -at(succ(A),B,s4) # label(s4ax1) # label(axiom).
+at(A,B,s1) | at(A,B,s2) | -at(succ(A),B,s4) # label(s4ax1) # label(axiom).
+-train(A) | -go(B,A) | -open(B,in2) | -at(B,A,in2) | at(succ(B),A,s2) # label(s2ax1) # label(axiom).
+train(A) | -at(succ(B),A,s2) # label(s2ax1) # label(axiom).
+go(A,B) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).
+open(A,in2) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).
+at(A,B,in2) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).
+-train(A) | -go(B,A) | -open(B,in1) | -at(B,A,in1) | at(succ(B),A,s1) # label(s1ax1) # label(axiom).
+train(A) | -at(succ(B),A,s1) # label(s1ax1) # label(axiom).
+go(A,B) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).
+open(A,in1) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).
+at(A,B,in1) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).
+in1 != in2 # label(nodesExclusivity) # label(axiom).
+s2 != in2 # label(nodesExclusivity) # label(axiom).
+s1 != in2 # label(nodesExclusivity) # label(axiom).
+out2 != in2 # label(nodesExclusivity) # label(axiom).
+out1 != in2 # label(nodesExclusivity) # label(axiom).
+s3 != in2 # label(nodesExclusivity) # label(axiom).
+s4 != in2 # label(nodesExclusivity) # label(axiom).
+s2 != in1 # label(nodesExclusivity) # label(axiom).
+s1 != in1 # label(nodesExclusivity) # label(axiom).
+out2 != in1 # label(nodesExclusivity) # label(axiom).
+out1 != in1 # label(nodesExclusivity) # label(axiom).
+s3 != in1 # label(nodesExclusivity) # label(axiom).
+s4 != in1 # label(nodesExclusivity) # label(axiom).
+s2 != s1 # label(nodesExclusivity) # label(axiom).
+s2 != out2 # label(nodesExclusivity) # label(axiom).
+s2 != out1 # label(nodesExclusivity) # label(axiom).
+s2 != s3 # label(nodesExclusivity) # label(axiom).
+s2 != s4 # label(nodesExclusivity) # label(axiom).
+s1 != out2 # label(nodesExclusivity) # label(axiom).
+s1 != out1 # label(nodesExclusivity) # label(axiom).
+s1 != s3 # label(nodesExclusivity) # label(axiom).
+s1 != s4 # label(nodesExclusivity) # label(axiom).
+out1 != out2 # label(nodesExclusivity) # label(axiom).
+out2 != s3 # label(nodesExclusivity) # label(axiom).
+s4 != out2 # label(nodesExclusivity) # label(axiom).
+out1 != s3 # label(nodesExclusivity) # label(axiom).
+out1 != s4 # label(nodesExclusivity) # label(axiom).
+s4 != s3 # label(nodesExclusivity) # label(axiom).
+-at(A,B,out2) | -at(succ(A),B,out2) # label(disappearout2) # label(axiom).
+-at(A,B,out1) | -at(succ(A),B,out1) # label(disappearout1) # label(axiom).
+-at(A,B,C) | -at(A,B,D) | D = C # label(positionInOneNodeAtTime) # label(axiom).
+-at(A,B,in2) | C = B | -at(A,C,in2) # label(onlyOneTrainin2) # label(axiom).
+-at(A,B,in1) | C = B | -at(A,C,in1) # label(onlyOneTrainin1) # label(axiom).
+-at(succ(A),B,in2) | appear(A,B,in2) | at(A,B,in2) # label(appearin2) # label(axiom).
+-at(succ(A),B,in2) | appear(A,B,in2) | -go(A,B) | -open(A,in2) # label(appearin2) # label(axiom).
+at(succ(A),B,in2) | -appear(A,B,in2) # label(appearin2) # label(axiom).
+at(succ(A),B,in2) | -at(A,B,in2) | go(A,B) # label(appearin2) # label(axiom).
+at(succ(A),B,in2) | -at(A,B,in2) | open(A,in2) # label(appearin2) # label(axiom).
+-at(succ(A),B,in1) | appear(A,B,in1) | at(A,B,in1) # label(appearin1) # label(axiom).
+-at(succ(A),B,in1) | appear(A,B,in1) | -go(A,B) | -open(A,in1) # label(appearin1) # label(axiom).
+at(succ(A),B,in1) | -appear(A,B,in1) # label(appearin1) # label(axiom).
+at(succ(A),B,in1) | -at(A,B,in1) | go(A,B) # label(appearin1) # label(axiom).
+at(succ(A),B,in1) | -at(A,B,in1) | open(A,in1) # label(appearin1) # label(axiom).
+goal(A) = out2 | goal(A) = out1 # label(trainGoals) # label(axiom).
+end_of_list.
+
+============================== end of clauses for search =============
+
+% There are no natural numbers in the input.
+
+============================== DOMAIN SIZE 2 =========================
+
+============================== STATISTICS ============================
+
+For domain size 2.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.01 seconds).
+Ground clauses: seen=320, kept=268.
+Selections=1, assignments=1, propagations=13, current_models=0.
+Rewrite_terms=130, rewrite_bools=14, indexes=88.
+Rules_from_neg_clauses=7, cross_offs=7.
+
+============================== end of statistics =====================
+
+============================== DOMAIN SIZE 3 =========================
+
+============================== STATISTICS ============================
+
+For domain size 3.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.01 seconds).
+Ground clauses: seen=748, kept=625.
+Selections=2, assignments=3, propagations=18, current_models=0.
+Rewrite_terms=505, rewrite_bools=35, indexes=369.
+Rules_from_neg_clauses=6, cross_offs=13.
+
+============================== end of statistics =====================
+
+============================== DOMAIN SIZE 4 =========================
+
+============================== STATISTICS ============================
+
+For domain size 4.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.02 seconds).
+Ground clauses: seen=1460, kept=1228.
+Selections=3, assignments=6, propagations=25, current_models=0.
+Rewrite_terms=1310, rewrite_bools=67, indexes=800.
+Rules_from_neg_clauses=5, cross_offs=18.
+
+============================== end of statistics =====================
+
+============================== DOMAIN SIZE 5 =========================
+
+============================== STATISTICS ============================
+
+For domain size 5.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.02 seconds).
+Ground clauses: seen=2558, kept=2173.
+Selections=4, assignments=10, propagations=34, current_models=0.
+Rewrite_terms=2735, rewrite_bools=111, indexes=1500.
+Rules_from_neg_clauses=4, cross_offs=22.
+
+============================== end of statistics =====================
+
+============================== DOMAIN SIZE 6 =========================
+
+============================== STATISTICS ============================
+
+For domain size 6.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.02 seconds).
+Ground clauses: seen=4168, kept=3580.
+Selections=5, assignments=15, propagations=45, current_models=0.
+Rewrite_terms=4718, rewrite_bools=168, indexes=2808.
+Rules_from_neg_clauses=3, cross_offs=25.
+
+============================== end of statistics =====================
+
+============================== DOMAIN SIZE 7 =========================
+
+============================== STATISTICS ============================
+
+For domain size 7.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.03 seconds).
+Ground clauses: seen=6440, kept=5593.
+Selections=6, assignments=21, propagations=58, current_models=0.
+Rewrite_terms=7488, rewrite_bools=239, indexes=4704.
+Rules_from_neg_clauses=2, cross_offs=27.
+
+============================== end of statistics =====================
+
+============================== DOMAIN SIZE 8 =========================
+
+============================== MODEL =================================
+
+interpretation( 8, [number=1, seconds=0], [
+
+        function(in1, [ 0 ]),
+
+        function(in2, [ 1 ]),
+
+        function(out1, [ 2 ]),
+
+        function(out2, [ 3 ]),
+
+        function(s1, [ 4 ]),
+
+        function(s2, [ 5 ]),
+
+        function(s3, [ 6 ]),
+
+        function(s4, [ 7 ]),
+
+        function(goal(_), [ 2, 2, 2, 2, 2, 2, 2, 2 ]),
+
+        function(pred(_), [ 0, 1, 2, 3, 4, 5, 6, 7 ]),
+
+        function(succ(_), [ 0, 1, 2, 3, 4, 5, 6, 7 ]),
+
+        function(f1(_), [ 0, 0, 0, 0, 0, 0, 0, 0 ]),
+
+        function(f2(_), [ 1, 1, 1, 1, 1, 1, 1, 1 ]),
+
+        function(switch(_,_), [
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0 ]),
+
+        function(f3(_,_), [
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0 ]),
+
+        relation(train(_), [ 0, 0, 0, 0, 0, 0, 0, 0 ]),
+
+        relation(go(_,_), [
+			   1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1, 1, 1 ]),
+
+        relation(less(_,_), [
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   1, 1, 0, 0, 0, 0, 0, 0,
+			   1, 1, 1, 0, 0, 0, 0, 0,
+			   1, 1, 1, 1, 0, 0, 0, 0,
+			   1, 1, 1, 1, 1, 0, 0, 0,
+			   1, 1, 1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 1, 1, 1, 0,
+			   1, 1, 1, 1, 1, 1, 1, 1 ]),
+
+        relation(open(_,_), [
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0 ]),
+
+        relation(appear(_,_,_), [
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0 ]),
+
+        relation(at(_,_,_), [
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0, 0, 0 ])
+]).
+
+============================== end of model ==========================
+
+============================== STATISTICS ============================
+
+For domain size 8.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.05 seconds).
+Ground clauses: seen=9548, kept=8380.
+Selections=650, assignments=716, propagations=750, current_models=1.
+Rewrite_terms=18158, rewrite_bools=10232, indexes=11123.
+Rules_from_neg_clauses=2, cross_offs=91.
+
+============================== end of statistics =====================
+
+User_CPU=0.05, System_CPU=0.01, Wall_clock=1.
+
+Exiting with 1 model.
+
+Process 17039 exit (max_models) Sun Jun  1 15:57:07 2014
+The process finished Sun Jun  1 15:57:07 2014

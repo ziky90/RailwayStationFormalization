@@ -1,0 +1,620 @@
+============================== Mace4 =================================
+Mace4 (64) version 2009-11A, November 2009.
+Process 18091 was started by zikesjan on Jan-MacBook-Pro-5.local,
+Mon Jun  2 11:38:32 2014
+The command was "/Users/zikesjan/Downloads/LADR-2009-11A/bin/mace4".
+============================== end of head ===========================
+
+============================== INPUT =================================
+set(prolog_style_variables).
+
+formulas(assumptions).
+(all X all Y (less(X,Y) & less(Y,X) -> X = Y)) # label(antisymmetry) # label(axiom).
+(all X all Y all Z (less(X,Y) & less(Y,Z) -> less(X,Z))) # label(transitivity) # label(axiom).
+(all X all Y (less(X,Y) | less(Y,X))) # label(totality) # label(axiom).
+(all X (less(X,succ(X)) & (all Y (less(Y,X) | less(succ(X),Y))))) # label(succ) # label(axiom).
+(all X (pred(succ(X)) = X & succ(pred(X)) = X)) # label(pred) # label(axiom).
+(all X all T go(X,T)) # label(goIfItsPossible) # label(axiom).
+(all X exists Y appear(X,Y,in2)) # label(alwaysAppearsin2) # label(axiom).
+(all X exists Y appear(X,Y,in1)) # label(alwaysAppearsin1) # label(axiom).
+(all X all T (train(T) -> (exists X2 (less(X,X2) & go(X2,T))))) # label(go) # label(axiom).
+(all X all T (train(T) & go(X,T) & (switch(X,s1) = out2 & at(X,T,s1) | switch(X,s2) = out2 & at(X,T,s2)) <-> at(succ(X),T,out2))) # label(out2ax1) # label(axiom).
+(all X all T (train(T) & go(X,T) & (switch(X,s1) = out1 & at(X,T,s1) | switch(X,s2) = out1 & at(X,T,s2)) <-> at(succ(X),T,out1))) # label(out1ax1) # label(axiom).
+(all X all T (train(T) & go(X,T) & open(X,in2) & at(X,T,in2) <-> at(succ(X),T,s2))) # label(s2ax1) # label(axiom).
+(all X all T (train(T) & go(X,T) & open(X,in1) & at(X,T,in1) <-> at(succ(X),T,s1))) # label(s1ax1) # label(axiom).
+in2 != in1 & in2 != s2 & in2 != s1 & in2 != out2 & in2 != out1 & in1 != s2 & in1 != s1 & in1 != out2 & in1 != out1 & s2 != s1 & s2 != out2 & s2 != out1 & s1 != out2 & s1 != out1 & out2 != out1 # label(nodesExclusivity) # label(axiom).
+(all X all T (at(X,T,out2) -> -at(succ(X),T,out2))) # label(disappearout2) # label(axiom).
+(all X all T (at(X,T,out1) -> -at(succ(X),T,out1))) # label(disappearout1) # label(axiom).
+(all X all T all N1 all N2 (at(X,T,N1) & at(X,T,N2) -> N1 = N2)) # label(positionInOneNodeAtTime) # label(axiom).
+(all X all T1 all T2 (at(X,T1,in2) & T1 != T2 -> -at(X,T2,in2))) # label(onlyOneTrainin2) # label(axiom).
+(all X all T1 all T2 (at(X,T1,in1) & T1 != T2 -> -at(X,T2,in1))) # label(onlyOneTrainin1) # label(axiom).
+(all X all T (at(succ(X),T,in2) <-> appear(X,T,in2) | at(X,T,in2) & (-go(X,T) | -open(X,in2)))) # label(appearin2) # label(axiom).
+(all X all T (at(succ(X),T,in1) <-> appear(X,T,in1) | at(X,T,in1) & (-go(X,T) | -open(X,in1)))) # label(appearin1) # label(axiom).
+(all T (goal(T) = out2 | goal(T) = out1)) # label(trainGoals) # label(axiom).
+(all X (succ(X) != X -> (clockOrder(X) = in2 <-> clockOrder(succ(X)) = in1))) # label(clockOrderin2) # label(axiom).
+(all X (succ(X) != X -> (clockOrder(X) = in1 <-> clockOrder(succ(X)) = in2))) # label(clockOrderin1) # label(axiom).
+(all X (clockOrder(X) = in2 | clockOrder(X) = in1)) # label(clockPossibilities) # label(axiom).
+(all X (configuration(X,path0) <-> switch(X,s1) = out2)) # label(switchesConfiguration0) # label(axiom).
+(all X (configuration(X,path1) <-> switch(X,s2) = out2)) # label(switchesConfiguration1) # label(axiom).
+(all X (configuration(X,path2) <-> switch(X,s1) = out1)) # label(switchesConfiguration2) # label(axiom).
+(all X (configuration(X,path3) <-> switch(X,s2) = out1)) # label(switchesConfiguration3) # label(axiom).
+(all X all T (free(X,path0) <-> -at(X,T,s1))) # label(freeRoute0) # label(axiom).
+(all X all T (free(X,path1) <-> -at(X,T,s2))) # label(freeRoute1) # label(axiom).
+(all X all T (free(X,path2) <-> -at(X,T,s1))) # label(freeRoute2) # label(axiom).
+(all X all T (free(X,path3) <-> -at(X,T,s2))) # label(freeRoute3) # label(axiom).
+(all X (nonconflicting(X,path0) <-> free(X,path0) & free(X,path1) & free(X,path2))) # label(nonconflicting0) # label(axiom).
+(all X (nonconflicting(X,path1) <-> free(X,path1) & free(X,path0) & free(X,path3))) # label(nonconflicting1) # label(axiom).
+(all X (nonconflicting(X,path2) <-> free(X,path2) & free(X,path0) & free(X,path3))) # label(nonconflicting2) # label(axiom).
+(all X (nonconflicting(X,path3) <-> free(X,path3) & free(X,path1) & free(X,path2))) # label(nonconflicting3) # label(axiom).
+path0 != path1 & path0 != path2 & path0 != path3 & path1 != path2 & path1 != path3 & path2 != path3 # label(routesExclusivity) # label(axiom).
+(all X (available(X,path0) <-> nonconflicting(X,path0) & configuration(X,path0))) # label(availableRoute0) # label(axiom).
+(all X (available(X,path1) <-> nonconflicting(X,path1) & configuration(X,path1))) # label(availableRoute1) # label(axiom).
+(all X (available(X,path2) <-> nonconflicting(X,path2) & configuration(X,path2))) # label(availableRoute2) # label(axiom).
+(all X (available(X,path3) <-> nonconflicting(X,path3) & configuration(X,path3))) # label(availableRoute3) # label(axiom).
+(all X exists T (wantsToGo(X,in2,out2) <-> at(X,T,in2) & goal(T) = out2)) # label(wantsToGoin2out2) # label(axiom).
+(all X exists T (wantsToGo(X,in2,out1) <-> at(X,T,in2) & goal(T) = out1)) # label(wantsToGoin2out1) # label(axiom).
+(all X exists T (wantsToGo(X,in1,out2) <-> at(X,T,in1) & goal(T) = out2)) # label(wantsToGoin1out2) # label(axiom).
+(all X exists T (wantsToGo(X,in1,out1) <-> at(X,T,in1) & goal(T) = out1)) # label(wantsToGoin1out1) # label(axiom).
+(all X (toBeUsed(X,path0) <-> available(X,path0) & clockOrder(X) = in1 & wantsToGo(X,in1,out2))) # label(pathToBeUsed0) # label(axiom).
+(all X (toBeUsed(X,path1) <-> available(X,path1) & clockOrder(X) = in2 & wantsToGo(X,in2,out2))) # label(pathToBeUsed1) # label(axiom).
+(all X (toBeUsed(X,path2) <-> available(X,path2) & clockOrder(X) = in1 & wantsToGo(X,in1,out1))) # label(pathToBeUsed2) # label(axiom).
+(all X (toBeUsed(X,path3) <-> available(X,path3) & clockOrder(X) = in2 & wantsToGo(X,in2,out1))) # label(pathToBeUsed3) # label(axiom).
+(all X all P (configuration(succ(X),P) <-> configuration(X,P) & -free(X,P) | toBeUsed(X,P))) # label(setPath) # label(axiom).
+(all X (open(succ(X),in2) <-> toBeUsed(X,path1) | toBeUsed(X,path3))) # label(openGatein2) # label(axiom).
+(all X (open(succ(X),in1) <-> toBeUsed(X,path0) | toBeUsed(X,path2))) # label(openGatein1) # label(axiom).
+end_of_list.
+
+formulas(goals).
+end_of_list.
+
+============================== end of input ==========================
+
+============================== PROCESS NON-CLAUSAL FORMULAS ==========
+
+% Formulas that are not ordinary clauses:
+1 (all X all Y (less(X,Y) & less(Y,X) -> X = Y)) # label(antisymmetry) # label(axiom) # label(non_clause).  [assumption].
+2 (all X all Y all Z (less(X,Y) & less(Y,Z) -> less(X,Z))) # label(transitivity) # label(axiom) # label(non_clause).  [assumption].
+3 (all X all Y (less(X,Y) | less(Y,X))) # label(totality) # label(axiom) # label(non_clause).  [assumption].
+4 (all X (less(X,succ(X)) & (all Y (less(Y,X) | less(succ(X),Y))))) # label(succ) # label(axiom) # label(non_clause).  [assumption].
+5 (all X (pred(succ(X)) = X & succ(pred(X)) = X)) # label(pred) # label(axiom) # label(non_clause).  [assumption].
+6 (all X all T go(X,T)) # label(goIfItsPossible) # label(axiom) # label(non_clause).  [assumption].
+7 (all X exists Y appear(X,Y,in2)) # label(alwaysAppearsin2) # label(axiom) # label(non_clause).  [assumption].
+8 (all X exists Y appear(X,Y,in1)) # label(alwaysAppearsin1) # label(axiom) # label(non_clause).  [assumption].
+9 (all X all T (train(T) -> (exists X2 (less(X,X2) & go(X2,T))))) # label(go) # label(axiom) # label(non_clause).  [assumption].
+10 (all X all T (train(T) & go(X,T) & (switch(X,s1) = out2 & at(X,T,s1) | switch(X,s2) = out2 & at(X,T,s2)) <-> at(succ(X),T,out2))) # label(out2ax1) # label(axiom) # label(non_clause).  [assumption].
+11 (all X all T (train(T) & go(X,T) & (switch(X,s1) = out1 & at(X,T,s1) | switch(X,s2) = out1 & at(X,T,s2)) <-> at(succ(X),T,out1))) # label(out1ax1) # label(axiom) # label(non_clause).  [assumption].
+12 (all X all T (train(T) & go(X,T) & open(X,in2) & at(X,T,in2) <-> at(succ(X),T,s2))) # label(s2ax1) # label(axiom) # label(non_clause).  [assumption].
+13 (all X all T (train(T) & go(X,T) & open(X,in1) & at(X,T,in1) <-> at(succ(X),T,s1))) # label(s1ax1) # label(axiom) # label(non_clause).  [assumption].
+14 in2 != in1 & in2 != s2 & in2 != s1 & in2 != out2 & in2 != out1 & in1 != s2 & in1 != s1 & in1 != out2 & in1 != out1 & s2 != s1 & s2 != out2 & s2 != out1 & s1 != out2 & s1 != out1 & out2 != out1 # label(nodesExclusivity) # label(axiom) # label(non_clause).  [assumption].
+15 (all X all T (at(X,T,out2) -> -at(succ(X),T,out2))) # label(disappearout2) # label(axiom) # label(non_clause).  [assumption].
+16 (all X all T (at(X,T,out1) -> -at(succ(X),T,out1))) # label(disappearout1) # label(axiom) # label(non_clause).  [assumption].
+17 (all X all T all N1 all N2 (at(X,T,N1) & at(X,T,N2) -> N1 = N2)) # label(positionInOneNodeAtTime) # label(axiom) # label(non_clause).  [assumption].
+18 (all X all T1 all T2 (at(X,T1,in2) & T1 != T2 -> -at(X,T2,in2))) # label(onlyOneTrainin2) # label(axiom) # label(non_clause).  [assumption].
+19 (all X all T1 all T2 (at(X,T1,in1) & T1 != T2 -> -at(X,T2,in1))) # label(onlyOneTrainin1) # label(axiom) # label(non_clause).  [assumption].
+20 (all X all T (at(succ(X),T,in2) <-> appear(X,T,in2) | at(X,T,in2) & (-go(X,T) | -open(X,in2)))) # label(appearin2) # label(axiom) # label(non_clause).  [assumption].
+21 (all X all T (at(succ(X),T,in1) <-> appear(X,T,in1) | at(X,T,in1) & (-go(X,T) | -open(X,in1)))) # label(appearin1) # label(axiom) # label(non_clause).  [assumption].
+22 (all T (goal(T) = out2 | goal(T) = out1)) # label(trainGoals) # label(axiom) # label(non_clause).  [assumption].
+23 (all X (succ(X) != X -> (clockOrder(X) = in2 <-> clockOrder(succ(X)) = in1))) # label(clockOrderin2) # label(axiom) # label(non_clause).  [assumption].
+24 (all X (succ(X) != X -> (clockOrder(X) = in1 <-> clockOrder(succ(X)) = in2))) # label(clockOrderin1) # label(axiom) # label(non_clause).  [assumption].
+25 (all X (clockOrder(X) = in2 | clockOrder(X) = in1)) # label(clockPossibilities) # label(axiom) # label(non_clause).  [assumption].
+26 (all X (configuration(X,path0) <-> switch(X,s1) = out2)) # label(switchesConfiguration0) # label(axiom) # label(non_clause).  [assumption].
+27 (all X (configuration(X,path1) <-> switch(X,s2) = out2)) # label(switchesConfiguration1) # label(axiom) # label(non_clause).  [assumption].
+28 (all X (configuration(X,path2) <-> switch(X,s1) = out1)) # label(switchesConfiguration2) # label(axiom) # label(non_clause).  [assumption].
+29 (all X (configuration(X,path3) <-> switch(X,s2) = out1)) # label(switchesConfiguration3) # label(axiom) # label(non_clause).  [assumption].
+30 (all X all T (free(X,path0) <-> -at(X,T,s1))) # label(freeRoute0) # label(axiom) # label(non_clause).  [assumption].
+31 (all X all T (free(X,path1) <-> -at(X,T,s2))) # label(freeRoute1) # label(axiom) # label(non_clause).  [assumption].
+32 (all X all T (free(X,path2) <-> -at(X,T,s1))) # label(freeRoute2) # label(axiom) # label(non_clause).  [assumption].
+33 (all X all T (free(X,path3) <-> -at(X,T,s2))) # label(freeRoute3) # label(axiom) # label(non_clause).  [assumption].
+34 (all X (nonconflicting(X,path0) <-> free(X,path0) & free(X,path1) & free(X,path2))) # label(nonconflicting0) # label(axiom) # label(non_clause).  [assumption].
+35 (all X (nonconflicting(X,path1) <-> free(X,path1) & free(X,path0) & free(X,path3))) # label(nonconflicting1) # label(axiom) # label(non_clause).  [assumption].
+36 (all X (nonconflicting(X,path2) <-> free(X,path2) & free(X,path0) & free(X,path3))) # label(nonconflicting2) # label(axiom) # label(non_clause).  [assumption].
+37 (all X (nonconflicting(X,path3) <-> free(X,path3) & free(X,path1) & free(X,path2))) # label(nonconflicting3) # label(axiom) # label(non_clause).  [assumption].
+38 path0 != path1 & path0 != path2 & path0 != path3 & path1 != path2 & path1 != path3 & path2 != path3 # label(routesExclusivity) # label(axiom) # label(non_clause).  [assumption].
+39 (all X (available(X,path0) <-> nonconflicting(X,path0) & configuration(X,path0))) # label(availableRoute0) # label(axiom) # label(non_clause).  [assumption].
+40 (all X (available(X,path1) <-> nonconflicting(X,path1) & configuration(X,path1))) # label(availableRoute1) # label(axiom) # label(non_clause).  [assumption].
+41 (all X (available(X,path2) <-> nonconflicting(X,path2) & configuration(X,path2))) # label(availableRoute2) # label(axiom) # label(non_clause).  [assumption].
+42 (all X (available(X,path3) <-> nonconflicting(X,path3) & configuration(X,path3))) # label(availableRoute3) # label(axiom) # label(non_clause).  [assumption].
+43 (all X exists T (wantsToGo(X,in2,out2) <-> at(X,T,in2) & goal(T) = out2)) # label(wantsToGoin2out2) # label(axiom) # label(non_clause).  [assumption].
+44 (all X exists T (wantsToGo(X,in2,out1) <-> at(X,T,in2) & goal(T) = out1)) # label(wantsToGoin2out1) # label(axiom) # label(non_clause).  [assumption].
+45 (all X exists T (wantsToGo(X,in1,out2) <-> at(X,T,in1) & goal(T) = out2)) # label(wantsToGoin1out2) # label(axiom) # label(non_clause).  [assumption].
+46 (all X exists T (wantsToGo(X,in1,out1) <-> at(X,T,in1) & goal(T) = out1)) # label(wantsToGoin1out1) # label(axiom) # label(non_clause).  [assumption].
+47 (all X (toBeUsed(X,path0) <-> available(X,path0) & clockOrder(X) = in1 & wantsToGo(X,in1,out2))) # label(pathToBeUsed0) # label(axiom) # label(non_clause).  [assumption].
+48 (all X (toBeUsed(X,path1) <-> available(X,path1) & clockOrder(X) = in2 & wantsToGo(X,in2,out2))) # label(pathToBeUsed1) # label(axiom) # label(non_clause).  [assumption].
+49 (all X (toBeUsed(X,path2) <-> available(X,path2) & clockOrder(X) = in1 & wantsToGo(X,in1,out1))) # label(pathToBeUsed2) # label(axiom) # label(non_clause).  [assumption].
+50 (all X (toBeUsed(X,path3) <-> available(X,path3) & clockOrder(X) = in2 & wantsToGo(X,in2,out1))) # label(pathToBeUsed3) # label(axiom) # label(non_clause).  [assumption].
+51 (all X all P (configuration(succ(X),P) <-> configuration(X,P) & -free(X,P) | toBeUsed(X,P))) # label(setPath) # label(axiom) # label(non_clause).  [assumption].
+52 (all X (open(succ(X),in2) <-> toBeUsed(X,path1) | toBeUsed(X,path3))) # label(openGatein2) # label(axiom) # label(non_clause).  [assumption].
+53 (all X (open(succ(X),in1) <-> toBeUsed(X,path0) | toBeUsed(X,path2))) # label(openGatein1) # label(axiom) # label(non_clause).  [assumption].
+
+============================== end of process non-clausal formulas ===
+
+============================== CLAUSES FOR SEARCH ====================
+
+formulas(mace4_clauses).
+-less(A,B) | -less(B,A) | B = A # label(antisymmetry) # label(axiom).
+-less(A,B) | -less(B,C) | less(A,C) # label(transitivity) # label(axiom).
+less(A,B) | less(B,A) # label(totality) # label(axiom).
+less(A,succ(A)) # label(succ) # label(axiom).
+less(A,B) | less(succ(B),A) # label(succ) # label(axiom).
+pred(succ(A)) = A # label(pred) # label(axiom).
+succ(pred(A)) = A # label(pred) # label(axiom).
+go(A,B) # label(goIfItsPossible) # label(axiom).
+appear(A,f1(A),in2) # label(alwaysAppearsin2) # label(axiom).
+appear(A,f2(A),in1) # label(alwaysAppearsin1) # label(axiom).
+-train(A) | less(B,f3(B,A)) # label(go) # label(axiom).
+-train(A) | go(f3(B,A),A) # label(go) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s1) != out2 | -at(B,A,s1) | at(succ(B),A,out2) # label(out2ax1) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s2) != out2 | -at(B,A,s2) | at(succ(B),A,out2) # label(out2ax1) # label(axiom).
+train(A) | -at(succ(B),A,out2) # label(out2ax1) # label(axiom).
+go(A,B) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).
+switch(A,s1) = out2 | switch(A,s2) = out2 | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).
+switch(A,s1) = out2 | at(A,B,s2) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).
+at(A,B,s1) | switch(A,s2) = out2 | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).
+at(A,B,s1) | at(A,B,s2) | -at(succ(A),B,out2) # label(out2ax1) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s1) != out1 | -at(B,A,s1) | at(succ(B),A,out1) # label(out1ax1) # label(axiom).
+-train(A) | -go(B,A) | switch(B,s2) != out1 | -at(B,A,s2) | at(succ(B),A,out1) # label(out1ax1) # label(axiom).
+train(A) | -at(succ(B),A,out1) # label(out1ax1) # label(axiom).
+go(A,B) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).
+switch(A,s1) = out1 | switch(A,s2) = out1 | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).
+switch(A,s1) = out1 | at(A,B,s2) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).
+at(A,B,s1) | switch(A,s2) = out1 | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).
+at(A,B,s1) | at(A,B,s2) | -at(succ(A),B,out1) # label(out1ax1) # label(axiom).
+-train(A) | -go(B,A) | -open(B,in2) | -at(B,A,in2) | at(succ(B),A,s2) # label(s2ax1) # label(axiom).
+train(A) | -at(succ(B),A,s2) # label(s2ax1) # label(axiom).
+go(A,B) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).
+open(A,in2) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).
+at(A,B,in2) | -at(succ(A),B,s2) # label(s2ax1) # label(axiom).
+-train(A) | -go(B,A) | -open(B,in1) | -at(B,A,in1) | at(succ(B),A,s1) # label(s1ax1) # label(axiom).
+train(A) | -at(succ(B),A,s1) # label(s1ax1) # label(axiom).
+go(A,B) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).
+open(A,in1) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).
+at(A,B,in1) | -at(succ(A),B,s1) # label(s1ax1) # label(axiom).
+in1 != in2 # label(nodesExclusivity) # label(axiom).
+s2 != in2 # label(nodesExclusivity) # label(axiom).
+s1 != in2 # label(nodesExclusivity) # label(axiom).
+out2 != in2 # label(nodesExclusivity) # label(axiom).
+out1 != in2 # label(nodesExclusivity) # label(axiom).
+s2 != in1 # label(nodesExclusivity) # label(axiom).
+s1 != in1 # label(nodesExclusivity) # label(axiom).
+out2 != in1 # label(nodesExclusivity) # label(axiom).
+out1 != in1 # label(nodesExclusivity) # label(axiom).
+s2 != s1 # label(nodesExclusivity) # label(axiom).
+s2 != out2 # label(nodesExclusivity) # label(axiom).
+out1 != s2 # label(nodesExclusivity) # label(axiom).
+out2 != s1 # label(nodesExclusivity) # label(axiom).
+out1 != s1 # label(nodesExclusivity) # label(axiom).
+out1 != out2 # label(nodesExclusivity) # label(axiom).
+-at(A,B,out2) | -at(succ(A),B,out2) # label(disappearout2) # label(axiom).
+-at(A,B,out1) | -at(succ(A),B,out1) # label(disappearout1) # label(axiom).
+-at(A,B,C) | -at(A,B,D) | D = C # label(positionInOneNodeAtTime) # label(axiom).
+-at(A,B,in2) | C = B | -at(A,C,in2) # label(onlyOneTrainin2) # label(axiom).
+-at(A,B,in1) | C = B | -at(A,C,in1) # label(onlyOneTrainin1) # label(axiom).
+-at(succ(A),B,in2) | appear(A,B,in2) | at(A,B,in2) # label(appearin2) # label(axiom).
+-at(succ(A),B,in2) | appear(A,B,in2) | -go(A,B) | -open(A,in2) # label(appearin2) # label(axiom).
+at(succ(A),B,in2) | -appear(A,B,in2) # label(appearin2) # label(axiom).
+at(succ(A),B,in2) | -at(A,B,in2) | go(A,B) # label(appearin2) # label(axiom).
+at(succ(A),B,in2) | -at(A,B,in2) | open(A,in2) # label(appearin2) # label(axiom).
+-at(succ(A),B,in1) | appear(A,B,in1) | at(A,B,in1) # label(appearin1) # label(axiom).
+-at(succ(A),B,in1) | appear(A,B,in1) | -go(A,B) | -open(A,in1) # label(appearin1) # label(axiom).
+at(succ(A),B,in1) | -appear(A,B,in1) # label(appearin1) # label(axiom).
+at(succ(A),B,in1) | -at(A,B,in1) | go(A,B) # label(appearin1) # label(axiom).
+at(succ(A),B,in1) | -at(A,B,in1) | open(A,in1) # label(appearin1) # label(axiom).
+goal(A) = out2 | goal(A) = out1 # label(trainGoals) # label(axiom).
+succ(A) = A | clockOrder(A) != in2 | clockOrder(succ(A)) = in1 # label(clockOrderin2) # label(axiom).
+succ(A) = A | clockOrder(A) = in2 | clockOrder(succ(A)) != in1 # label(clockOrderin2) # label(axiom).
+succ(A) = A | clockOrder(A) != in1 | clockOrder(succ(A)) = in2 # label(clockOrderin1) # label(axiom).
+succ(A) = A | clockOrder(A) = in1 | clockOrder(succ(A)) != in2 # label(clockOrderin1) # label(axiom).
+clockOrder(A) = in2 | clockOrder(A) = in1 # label(clockPossibilities) # label(axiom).
+-configuration(A,path0) | switch(A,s1) = out2 # label(switchesConfiguration0) # label(axiom).
+configuration(A,path0) | switch(A,s1) != out2 # label(switchesConfiguration0) # label(axiom).
+-configuration(A,path1) | switch(A,s2) = out2 # label(switchesConfiguration1) # label(axiom).
+configuration(A,path1) | switch(A,s2) != out2 # label(switchesConfiguration1) # label(axiom).
+-configuration(A,path2) | switch(A,s1) = out1 # label(switchesConfiguration2) # label(axiom).
+configuration(A,path2) | switch(A,s1) != out1 # label(switchesConfiguration2) # label(axiom).
+-configuration(A,path3) | switch(A,s2) = out1 # label(switchesConfiguration3) # label(axiom).
+configuration(A,path3) | switch(A,s2) != out1 # label(switchesConfiguration3) # label(axiom).
+-free(A,path0) | -at(A,B,s1) # label(freeRoute0) # label(axiom).
+free(A,path0) | at(A,B,s1) # label(freeRoute0) # label(axiom).
+-free(A,path1) | -at(A,B,s2) # label(freeRoute1) # label(axiom).
+free(A,path1) | at(A,B,s2) # label(freeRoute1) # label(axiom).
+-free(A,path2) | -at(A,B,s1) # label(freeRoute2) # label(axiom).
+free(A,path2) | at(A,B,s1) # label(freeRoute2) # label(axiom).
+-free(A,path3) | -at(A,B,s2) # label(freeRoute3) # label(axiom).
+free(A,path3) | at(A,B,s2) # label(freeRoute3) # label(axiom).
+-nonconflicting(A,path0) | free(A,path0) # label(nonconflicting0) # label(axiom).
+-nonconflicting(A,path0) | free(A,path1) # label(nonconflicting0) # label(axiom).
+-nonconflicting(A,path0) | free(A,path2) # label(nonconflicting0) # label(axiom).
+nonconflicting(A,path0) | -free(A,path0) | -free(A,path1) | -free(A,path2) # label(nonconflicting0) # label(axiom).
+-nonconflicting(A,path1) | free(A,path1) # label(nonconflicting1) # label(axiom).
+-nonconflicting(A,path1) | free(A,path0) # label(nonconflicting1) # label(axiom).
+-nonconflicting(A,path1) | free(A,path3) # label(nonconflicting1) # label(axiom).
+nonconflicting(A,path1) | -free(A,path1) | -free(A,path0) | -free(A,path3) # label(nonconflicting1) # label(axiom).
+-nonconflicting(A,path2) | free(A,path2) # label(nonconflicting2) # label(axiom).
+-nonconflicting(A,path2) | free(A,path0) # label(nonconflicting2) # label(axiom).
+-nonconflicting(A,path2) | free(A,path3) # label(nonconflicting2) # label(axiom).
+nonconflicting(A,path2) | -free(A,path2) | -free(A,path0) | -free(A,path3) # label(nonconflicting2) # label(axiom).
+-nonconflicting(A,path3) | free(A,path3) # label(nonconflicting3) # label(axiom).
+-nonconflicting(A,path3) | free(A,path1) # label(nonconflicting3) # label(axiom).
+-nonconflicting(A,path3) | free(A,path2) # label(nonconflicting3) # label(axiom).
+nonconflicting(A,path3) | -free(A,path3) | -free(A,path1) | -free(A,path2) # label(nonconflicting3) # label(axiom).
+path1 != path0 # label(routesExclusivity) # label(axiom).
+path2 != path0 # label(routesExclusivity) # label(axiom).
+path3 != path0 # label(routesExclusivity) # label(axiom).
+path2 != path1 # label(routesExclusivity) # label(axiom).
+path3 != path1 # label(routesExclusivity) # label(axiom).
+path3 != path2 # label(routesExclusivity) # label(axiom).
+-available(A,path0) | nonconflicting(A,path0) # label(availableRoute0) # label(axiom).
+-available(A,path0) | configuration(A,path0) # label(availableRoute0) # label(axiom).
+available(A,path0) | -nonconflicting(A,path0) | -configuration(A,path0) # label(availableRoute0) # label(axiom).
+-available(A,path1) | nonconflicting(A,path1) # label(availableRoute1) # label(axiom).
+-available(A,path1) | configuration(A,path1) # label(availableRoute1) # label(axiom).
+available(A,path1) | -nonconflicting(A,path1) | -configuration(A,path1) # label(availableRoute1) # label(axiom).
+-available(A,path2) | nonconflicting(A,path2) # label(availableRoute2) # label(axiom).
+-available(A,path2) | configuration(A,path2) # label(availableRoute2) # label(axiom).
+available(A,path2) | -nonconflicting(A,path2) | -configuration(A,path2) # label(availableRoute2) # label(axiom).
+-available(A,path3) | nonconflicting(A,path3) # label(availableRoute3) # label(axiom).
+-available(A,path3) | configuration(A,path3) # label(availableRoute3) # label(axiom).
+available(A,path3) | -nonconflicting(A,path3) | -configuration(A,path3) # label(availableRoute3) # label(axiom).
+-wantsToGo(A,in2,out2) | at(A,f4(A),in2) # label(wantsToGoin2out2) # label(axiom).
+-wantsToGo(A,in2,out2) | goal(f4(A)) = out2 # label(wantsToGoin2out2) # label(axiom).
+wantsToGo(A,in2,out2) | -at(A,f4(A),in2) | goal(f4(A)) != out2 # label(wantsToGoin2out2) # label(axiom).
+-wantsToGo(A,in2,out1) | at(A,f5(A),in2) # label(wantsToGoin2out1) # label(axiom).
+-wantsToGo(A,in2,out1) | goal(f5(A)) = out1 # label(wantsToGoin2out1) # label(axiom).
+wantsToGo(A,in2,out1) | -at(A,f5(A),in2) | goal(f5(A)) != out1 # label(wantsToGoin2out1) # label(axiom).
+-wantsToGo(A,in1,out2) | at(A,f6(A),in1) # label(wantsToGoin1out2) # label(axiom).
+-wantsToGo(A,in1,out2) | goal(f6(A)) = out2 # label(wantsToGoin1out2) # label(axiom).
+wantsToGo(A,in1,out2) | -at(A,f6(A),in1) | goal(f6(A)) != out2 # label(wantsToGoin1out2) # label(axiom).
+-wantsToGo(A,in1,out1) | at(A,f7(A),in1) # label(wantsToGoin1out1) # label(axiom).
+-wantsToGo(A,in1,out1) | goal(f7(A)) = out1 # label(wantsToGoin1out1) # label(axiom).
+wantsToGo(A,in1,out1) | -at(A,f7(A),in1) | goal(f7(A)) != out1 # label(wantsToGoin1out1) # label(axiom).
+-toBeUsed(A,path0) | available(A,path0) # label(pathToBeUsed0) # label(axiom).
+-toBeUsed(A,path0) | clockOrder(A) = in1 # label(pathToBeUsed0) # label(axiom).
+-toBeUsed(A,path0) | wantsToGo(A,in1,out2) # label(pathToBeUsed0) # label(axiom).
+toBeUsed(A,path0) | -available(A,path0) | clockOrder(A) != in1 | -wantsToGo(A,in1,out2) # label(pathToBeUsed0) # label(axiom).
+-toBeUsed(A,path1) | available(A,path1) # label(pathToBeUsed1) # label(axiom).
+-toBeUsed(A,path1) | clockOrder(A) = in2 # label(pathToBeUsed1) # label(axiom).
+-toBeUsed(A,path1) | wantsToGo(A,in2,out2) # label(pathToBeUsed1) # label(axiom).
+toBeUsed(A,path1) | -available(A,path1) | clockOrder(A) != in2 | -wantsToGo(A,in2,out2) # label(pathToBeUsed1) # label(axiom).
+-toBeUsed(A,path2) | available(A,path2) # label(pathToBeUsed2) # label(axiom).
+-toBeUsed(A,path2) | clockOrder(A) = in1 # label(pathToBeUsed2) # label(axiom).
+-toBeUsed(A,path2) | wantsToGo(A,in1,out1) # label(pathToBeUsed2) # label(axiom).
+toBeUsed(A,path2) | -available(A,path2) | clockOrder(A) != in1 | -wantsToGo(A,in1,out1) # label(pathToBeUsed2) # label(axiom).
+-toBeUsed(A,path3) | available(A,path3) # label(pathToBeUsed3) # label(axiom).
+-toBeUsed(A,path3) | clockOrder(A) = in2 # label(pathToBeUsed3) # label(axiom).
+-toBeUsed(A,path3) | wantsToGo(A,in2,out1) # label(pathToBeUsed3) # label(axiom).
+toBeUsed(A,path3) | -available(A,path3) | clockOrder(A) != in2 | -wantsToGo(A,in2,out1) # label(pathToBeUsed3) # label(axiom).
+-configuration(succ(A),B) | configuration(A,B) | toBeUsed(A,B) # label(setPath) # label(axiom).
+-configuration(succ(A),B) | -free(A,B) | toBeUsed(A,B) # label(setPath) # label(axiom).
+configuration(succ(A),B) | -configuration(A,B) | free(A,B) # label(setPath) # label(axiom).
+configuration(succ(A),B) | -toBeUsed(A,B) # label(setPath) # label(axiom).
+-open(succ(A),in2) | toBeUsed(A,path1) | toBeUsed(A,path3) # label(openGatein2) # label(axiom).
+open(succ(A),in2) | -toBeUsed(A,path1) # label(openGatein2) # label(axiom).
+open(succ(A),in2) | -toBeUsed(A,path3) # label(openGatein2) # label(axiom).
+-open(succ(A),in1) | toBeUsed(A,path0) | toBeUsed(A,path2) # label(openGatein1) # label(axiom).
+open(succ(A),in1) | -toBeUsed(A,path0) # label(openGatein1) # label(axiom).
+open(succ(A),in1) | -toBeUsed(A,path2) # label(openGatein1) # label(axiom).
+end_of_list.
+
+============================== end of clauses for search =============
+
+% There are no natural numbers in the input.
+
+============================== DOMAIN SIZE 2 =========================
+
+============================== STATISTICS ============================
+
+For domain size 2.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.01 seconds).
+Ground clauses: seen=447, kept=403.
+Selections=1, assignments=1, propagations=11, current_models=0.
+Rewrite_terms=232, rewrite_bools=14, indexes=88.
+Rules_from_neg_clauses=5, cross_offs=5.
+
+============================== end of statistics =====================
+
+============================== DOMAIN SIZE 3 =========================
+
+============================== STATISTICS ============================
+
+For domain size 3.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.01 seconds).
+Ground clauses: seen=930, kept=825.
+Selections=2, assignments=3, propagations=16, current_models=0.
+Rewrite_terms=781, rewrite_bools=35, indexes=417.
+Rules_from_neg_clauses=4, cross_offs=9.
+
+============================== end of statistics =====================
+
+============================== DOMAIN SIZE 4 =========================
+
+============================== STATISTICS ============================
+
+For domain size 4.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.01 seconds).
+Ground clauses: seen=1689, kept=1489.
+Selections=3, assignments=6, propagations=23, current_models=0.
+Rewrite_terms=1907, rewrite_bools=68, indexes=1000.
+Rules_from_neg_clauses=3, cross_offs=12.
+
+============================== end of statistics =====================
+
+============================== DOMAIN SIZE 5 =========================
+
+============================== STATISTICS ============================
+
+For domain size 5.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.02 seconds).
+Ground clauses: seen=2826, kept=2491.
+Selections=4, assignments=10, propagations=32, current_models=0.
+Rewrite_terms=3857, rewrite_bools=113, indexes=1970.
+Rules_from_neg_clauses=2, cross_offs=14.
+
+============================== end of statistics =====================
+
+============================== DOMAIN SIZE 6 =========================
+
+============================== MODEL =================================
+
+interpretation( 6, [number=1, seconds=0], [
+
+        function(in1, [ 0 ]),
+
+        function(in2, [ 1 ]),
+
+        function(out1, [ 2 ]),
+
+        function(out2, [ 3 ]),
+
+        function(path0, [ 0 ]),
+
+        function(path1, [ 1 ]),
+
+        function(path2, [ 2 ]),
+
+        function(path3, [ 3 ]),
+
+        function(s1, [ 4 ]),
+
+        function(s2, [ 5 ]),
+
+        function(clockOrder(_), [ 0, 0, 0, 0, 0, 0 ]),
+
+        function(goal(_), [ 2, 2, 2, 2, 2, 2 ]),
+
+        function(pred(_), [ 0, 1, 2, 3, 4, 5 ]),
+
+        function(succ(_), [ 0, 1, 2, 3, 4, 5 ]),
+
+        function(f1(_), [ 0, 0, 0, 0, 0, 0 ]),
+
+        function(f2(_), [ 1, 1, 1, 1, 1, 1 ]),
+
+        function(f4(_), [ 0, 0, 0, 0, 0, 0 ]),
+
+        function(f5(_), [ 0, 0, 0, 0, 0, 0 ]),
+
+        function(f6(_), [ 0, 0, 0, 0, 0, 0 ]),
+
+        function(f7(_), [ 0, 0, 0, 0, 0, 0 ]),
+
+        function(switch(_,_), [
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0 ]),
+
+        function(f3(_,_), [
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0 ]),
+
+        relation(train(_), [ 0, 0, 0, 0, 0, 0 ]),
+
+        relation(available(_,_), [
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0 ]),
+
+        relation(configuration(_,_), [
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0 ]),
+
+        relation(free(_,_), [
+			   1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 0, 0 ]),
+
+        relation(go(_,_), [
+			   1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1,
+			   1, 1, 1, 1, 1, 1 ]),
+
+        relation(less(_,_), [
+			   1, 0, 0, 0, 0, 0,
+			   1, 1, 0, 0, 0, 0,
+			   1, 1, 1, 0, 0, 0,
+			   1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 1, 0,
+			   1, 1, 1, 1, 1, 1 ]),
+
+        relation(nonconflicting(_,_), [
+			   1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 0, 0,
+			   1, 1, 1, 1, 0, 0 ]),
+
+        relation(open(_,_), [
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0 ]),
+
+        relation(toBeUsed(_,_), [
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0 ]),
+
+        relation(appear(_,_,_), [
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0 ]),
+
+        relation(at(_,_,_), [
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 1, 0, 0, 0, 0,
+			   1, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0 ]),
+
+        relation(wantsToGo(_,_,_), [
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 1, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 1, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 1, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 1, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 1, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 1, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0,
+			   0, 0, 0, 0, 0, 0 ])
+]).
+
+============================== end of model ==========================
+
+============================== STATISTICS ============================
+
+For domain size 6.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.03 seconds).
+Ground clauses: seen=4467, kept=3951.
+Selections=563, assignments=607, propagations=521, current_models=1.
+Rewrite_terms=11308, rewrite_bools=5325, indexes=7564.
+Rules_from_neg_clauses=2, cross_offs=74.
+
+============================== end of statistics =====================
+
+User_CPU=0.03, System_CPU=0.01, Wall_clock=0.
+
+Exiting with 1 model.
+
+Process 18091 exit (max_models) Mon Jun  2 11:38:32 2014
+The process finished Mon Jun  2 11:38:32 2014
