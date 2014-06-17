@@ -1,7 +1,7 @@
 ============================== Prover9 ===============================
 Prover9 (64) version 2009-11A, November 2009.
-Process 23869 was started by zikesjan on jan-mbp-5,
-Fri Jun  6 15:59:13 2014
+Process 25567 was started by zikesjan on jan-mbp-5,
+Fri Jun  6 21:00:52 2014
 The command was "/Users/zikesjan/Downloads/LADR-2009-11A/bin/prover9".
 ============================== end of head ===========================
 
@@ -84,7 +84,7 @@ path0 != path1 & path0 != path2 & path0 != path3 & path0 != path4 & path0 != pat
 end_of_list.
 
 formulas(goals).
-(exists X exists Y (at(X,T,in1) & less(X,Y) -> open(X,in1))) # label(willOpenin1) # label(conjecture).
+(exists X exists Y (at(X,T,in1) & less(X,Y) -> open(Y,in1))) # label(willOpenin1) # label(conjecture).
 end_of_list.
 
 ============================== end of input ==========================
@@ -164,7 +164,7 @@ end_of_list.
 70 (all X all P (configuration(succ(X),P) <-> configuration(X,P) & -free(X,P) | toBeUsed(X,P))) # label(setPath) # label(axiom) # label(non_clause).  [assumption].
 71 (all X (open(succ(X),in2) <-> toBeUsed(X,path1) | toBeUsed(X,path3) | toBeUsed(X,path5) | toBeUsed(X,path7))) # label(openGatein2) # label(axiom) # label(non_clause).  [assumption].
 72 (all X (open(succ(X),in1) <-> toBeUsed(X,path0) | toBeUsed(X,path2) | toBeUsed(X,path4) | toBeUsed(X,path6))) # label(openGatein1) # label(axiom) # label(non_clause).  [assumption].
-73 (exists X exists Y (at(X,T,in1) & less(X,Y) -> open(X,in1))) # label(willOpenin1) # label(conjecture) # label(non_clause) # label(goal).  [goal].
+73 (exists X exists Y (at(X,T,in1) & less(X,Y) -> open(Y,in1))) # label(willOpenin1) # label(conjecture) # label(non_clause) # label(goal).  [goal].
 
 ============================== end of process non-clausal formulas ===
 
@@ -1673,7 +1673,7 @@ kept:      808 A = B.  [back_unit_del(162),unit_del(a,461),unit_del(b,461)].
 
 ============================== PROOF =================================
 
-% Proof 1 at 0.09 (+ 0.01) seconds.
+% Proof 1 at 0.10 (+ 0.01) seconds.
 % Length of proof is 8.
 % Level of proof is 3.
 % Maximum clause weight is 9.000.
@@ -1681,7 +1681,7 @@ kept:      808 A = B.  [back_unit_del(162),unit_del(a,461),unit_del(b,461)].
 
 1 (all X all Y (less(X,Y) & less(Y,X) -> X = Y)) # label(antisymmetry) # label(axiom) # label(non_clause).  [assumption].
 49 path0 != path1 & path0 != path2 & path0 != path3 & path0 != path4 & path0 != path5 & path0 != path6 & path0 != path7 & path1 != path2 & path1 != path3 & path1 != path4 & path1 != path5 & path1 != path6 & path1 != path7 & path2 != path3 & path2 != path4 & path2 != path5 & path2 != path6 & path2 != path7 & path3 != path4 & path3 != path5 & path3 != path6 & path3 != path7 & path4 != path5 & path4 != path6 & path4 != path7 & path5 != path6 & path5 != path7 & path6 != path7 # label(routesExclusivity) # label(axiom) # label(non_clause).  [assumption].
-73 (exists X exists Y (at(X,T,in1) & less(X,Y) -> open(X,in1))) # label(willOpenin1) # label(conjecture) # label(non_clause) # label(goal).  [goal].
+73 (exists X exists Y (at(X,T,in1) & less(X,Y) -> open(Y,in1))) # label(willOpenin1) # label(conjecture) # label(non_clause) # label(goal).  [goal].
 162 -less(A,B) | -less(B,A) | B = A # label(antisymmetry) # label(axiom).  [clausify(1)].
 377 path7 != path6 # label(routesExclusivity) # label(axiom).  [clausify(49)].
 461 less(A,B) # label(willOpenin1) # label(conjecture).  [deny(73)].
@@ -1702,7 +1702,7 @@ Demod_attempts=13986. Demod_rewrites=0.
 Res_instance_prunes=0. Para_instance_prunes=0. Basic_paramod_prunes=0.
 Nonunit_fsub_feature_tests=150. Nonunit_bsub_feature_tests=1522.
 Megabytes=2.82.
-User_CPU=0.09, System_CPU=0.01, Wall_clock=0.
+User_CPU=0.10, System_CPU=0.01, Wall_clock=0.
 
 ============================== end of statistics =====================
 
@@ -1712,4 +1712,4 @@ THEOREM PROVED
 
 Exiting with 1 proof.
 
-Process 23869 exit (max_proofs) Fri Jun  6 15:59:13 2014
+Process 25567 exit (max_proofs) Fri Jun  6 21:00:52 2014

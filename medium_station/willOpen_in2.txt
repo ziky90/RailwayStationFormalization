@@ -1,7 +1,7 @@
 ============================== Prover9 ===============================
 Prover9 (64) version 2009-11A, November 2009.
-Process 23867 was started by zikesjan on jan-mbp-5,
-Fri Jun  6 15:59:00 2014
+Process 25565 was started by zikesjan on jan-mbp-5,
+Fri Jun  6 21:00:43 2014
 The command was "/Users/zikesjan/Downloads/LADR-2009-11A/bin/prover9".
 ============================== end of head ===========================
 
@@ -62,7 +62,7 @@ path0 != path1 & path0 != path2 & path0 != path3 & path1 != path2 & path1 != pat
 end_of_list.
 
 formulas(goals).
-(exists X exists Y (at(X,T,in2) & less(X,Y) -> open(X,in2))) # label(willOpenin2) # label(conjecture).
+(exists X exists Y (at(X,T,in2) & less(X,Y) -> open(Y,in2))) # label(willOpenin2) # label(conjecture).
 end_of_list.
 
 ============================== end of input ==========================
@@ -120,7 +120,7 @@ end_of_list.
 48 (all X all P (configuration(succ(X),P) <-> configuration(X,P) & -free(X,P) | toBeUsed(X,P))) # label(setPath) # label(axiom) # label(non_clause).  [assumption].
 49 (all X (open(succ(X),in2) <-> toBeUsed(X,path1) | toBeUsed(X,path3))) # label(openGatein2) # label(axiom) # label(non_clause).  [assumption].
 50 (all X (open(succ(X),in1) <-> toBeUsed(X,path0) | toBeUsed(X,path2))) # label(openGatein1) # label(axiom) # label(non_clause).  [assumption].
-51 (exists X exists Y (at(X,T,in2) & less(X,Y) -> open(X,in2))) # label(willOpenin2) # label(conjecture) # label(non_clause) # label(goal).  [goal].
+51 (exists X exists Y (at(X,T,in2) & less(X,Y) -> open(Y,in2))) # label(willOpenin2) # label(conjecture) # label(non_clause) # label(goal).  [goal].
 
 ============================== end of process non-clausal formulas ===
 
@@ -773,7 +773,7 @@ kept:      353 A = B.  [back_unit_del(96),unit_del(a,238),unit_del(b,238)].
 
 1 (all X all Y (less(X,Y) & less(Y,X) -> X = Y)) # label(antisymmetry) # label(axiom) # label(non_clause).  [assumption].
 35 path0 != path1 & path0 != path2 & path0 != path3 & path1 != path2 & path1 != path3 & path2 != path3 # label(routesExclusivity) # label(axiom) # label(non_clause).  [assumption].
-51 (exists X exists Y (at(X,T,in2) & less(X,Y) -> open(X,in2))) # label(willOpenin2) # label(conjecture) # label(non_clause) # label(goal).  [goal].
+51 (exists X exists Y (at(X,T,in2) & less(X,Y) -> open(Y,in2))) # label(willOpenin2) # label(conjecture) # label(non_clause) # label(goal).  [goal].
 96 -less(A,B) | -less(B,A) | B = A # label(antisymmetry) # label(axiom).  [clausify(1)].
 186 path3 != path2 # label(routesExclusivity) # label(axiom).  [clausify(35)].
 238 less(A,B) # label(willOpenin2) # label(conjecture).  [deny(51)].
@@ -804,4 +804,4 @@ THEOREM PROVED
 
 Exiting with 1 proof.
 
-Process 23867 exit (max_proofs) Fri Jun  6 15:59:00 2014
+Process 25565 exit (max_proofs) Fri Jun  6 21:00:43 2014
